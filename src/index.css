@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-cod-border;
+  }
+
+  body {
+    @apply bg-cod-darker text-cod-text font-sans antialiased;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+
+  /* COD MW Button Styles */
+  .btn-primary {
+    @apply bg-neon-green text-cod-darker font-semibold px-6 py-2.5 rounded-sm hover:bg-neon-green-dark transition-all duration-200 hover:shadow-neon-green uppercase tracking-wider text-sm;
+  }
+
+  .btn-secondary {
+    @apply bg-cod-panel text-cod-text font-semibold px-6 py-2.5 rounded-sm border border-cod-border-light hover:border-neon-green transition-all duration-200 uppercase tracking-wider text-sm;
+  }
+
+  .btn-danger {
+    @apply bg-cod-orange text-white font-semibold px-6 py-2.5 rounded-sm hover:bg-cod-orange-light transition-all duration-200 hover:shadow-neon-orange uppercase tracking-wider text-sm;
+  }
+
+  /* COD MW Input Styles */
+  .input-cod {
+    @apply bg-cod-panel border border-cod-border-light text-cod-text px-4 py-2.5 rounded-sm focus:outline-none focus:border-neon-green focus:ring-1 focus:ring-neon-green transition-all duration-200;
+  }
+
+  /* COD MW Card Styles */
+  .card-cod {
+    @apply bg-cod-panel border border-cod-border rounded-sm p-6 shadow-cod-card hover:border-cod-border-light transition-all duration-300;
+  }
+
+  .card-cod-highlight {
+    @apply bg-cod-panel border border-neon-green/30 rounded-sm p-6 shadow-neon-green hover:border-neon-green/50 transition-all duration-300;
+  }
+
+  /* Scrollbar Styles */
+  .scrollbar-cod::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-cod::-webkit-scrollbar-track {
+    @apply bg-cod-darker;
+  }
+
+  .scrollbar-cod::-webkit-scrollbar-thumb {
+    @apply bg-cod-gray rounded-full hover:bg-cod-gray-light;
+  }
+}
+
+@layer utilities {
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  }
+
+  .text-glow-orange {
+    text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+  }
+
+  .border-glow-green {
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
+  }
+}
