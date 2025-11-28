@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle } from 'lucide-react';
+import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import ServiceForm from './ServiceForm';
+import { generateVehicleReport } from '../utils/pdfGenerator';
 
 const VehicleCard = ({ vehicle }) => {
     const { updateVehicle } = useVehicles();
+    // ... existing state ...
     const [isEditingMileage, setIsEditingMileage] = useState(false);
     const [newMileage, setNewMileage] = useState(vehicle.mileage);
     const [showServiceForm, setShowServiceForm] = useState(false);
 
+    // ... existing handlers ...
     const handleSaveMileage = () => {
         if (newMileage && newMileage > 0) {
             updateVehicle(vehicle.id, { mileage: parseInt(newMileage) });
@@ -23,7 +26,7 @@ const VehicleCard = ({ vehicle }) => {
 
     const VehicleIcon = vehicle.type === 'auto' ? Car : Bike;
 
-    // Lógica de Alertas de Mantenimiento
+    // ... existing alert logic ...
     const getLastOilChange = () => {
         if (!vehicle.services || vehicle.services.length === 0) return null;
         return vehicle.services
@@ -35,17 +38,13 @@ const VehicleCard = ({ vehicle }) => {
     const serviceInterval = vehicle.type === 'moto' ? 5000 : 10000;
     const nextServiceKm = lastOilChange ? lastOilChange.mileageAtService + serviceInterval : null;
 
-    // Alerta URGENTE: Si se pasó 10,000 km del último servicio (o del intervalo base si no hay servicio)
-    // Simplificación: Si hay último servicio, usamos ese. Si no, asumimos que está al día o es nuevo.
     const isUrgent = lastOilChange && (vehicle.mileage >= lastOilChange.mileageAtService + 10000);
-
-    // Alerta de Próximo Servicio (Aviso)
     const isDueSoon = nextServiceKm && vehicle.mileage >= nextServiceKm;
 
     return (
         <>
             <div className={`card-cod group hover:border-neon-green/30 overflow-hidden relative ${isUrgent ? 'border-cod-orange shadow-neon-orange' : ''}`}>
-                {/* Etiqueta URGENTE */}
+                {/* ... existing content (Urgent label, Image, Info) ... */}
                 {isUrgent && (
                     <div className="absolute top-0 right-0 z-10">
                         <div className="bg-cod-orange text-cod-darker text-xs font-bold px-3 py-1 flex items-center gap-1 animate-pulse">
@@ -155,14 +154,23 @@ const VehicleCard = ({ vehicle }) => {
                         )}
                     </div>
 
-                    {/* Botón Registrar Servicio */}
-                    <button
-                        onClick={() => setShowServiceForm(true)}
-                        className="w-full mt-2 btn-secondary flex items-center justify-center gap-2 text-sm py-2"
-                    >
-                        <Wrench size={16} />
-                        Registrar Servicio
-                    </button>
+                    {/* Botones de Acción */}
+                    <div className="flex gap-2 mt-2">
+                        <button
+                            onClick={() => setShowServiceForm(true)}
+                            className="flex-1 btn-secondary flex items-center justify-center gap-2 text-sm py-2"
+                        >
+                            <Wrench size={16} />
+                            Servicio
+                        </button>
+                        <button
+                            onClick={() => generateVehicleReport(vehicle)}
+                            className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
+                            title="Generar Reporte PDF"
+                        >
+                            <FileText size={18} />
+                        </button>
+                    </div>
                 </div>
             </div>
 

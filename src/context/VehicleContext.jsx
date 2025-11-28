@@ -91,12 +91,24 @@ export const VehicleProvider = ({ children }) => {
         }));
     };
 
+    const restoreData = (data) => {
+        if (!Array.isArray(data)) {
+            throw new Error('Formato de datos inválido: Se esperaba un arreglo.');
+        }
+        // Validación básica del primer elemento si existe
+        if (data.length > 0 && (!data[0].id || !data[0].brand)) {
+            throw new Error('Formato de datos inválido: Estructura de vehículo incorrecta.');
+        }
+        setVehicles(data);
+    };
+
     const value = {
         vehicles,
         addVehicle,
         updateVehicle,
         deleteVehicle,
-        addService
+        addService,
+        restoreData
     };
 
     return (

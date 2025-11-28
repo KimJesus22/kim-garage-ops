@@ -1,4 +1,4 @@
-import { Car, History, BarChart3 } from 'lucide-react';
+import { Car, History, BarChart3, Settings } from 'lucide-react';
 
 const Sidebar = ({ currentPage, onNavigate }) => {
     const menuItems = [
@@ -6,6 +6,7 @@ const Sidebar = ({ currentPage, onNavigate }) => {
         { id: 'garage', label: 'Garage', icon: Car },
         { id: 'historial', label: 'Historial', icon: History },
         { id: 'estadisticas', label: 'Estadísticas', icon: BarChart3 },
+        { id: 'configuracion', label: 'Configuración', icon: Settings },
     ];
 
     return (

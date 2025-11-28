@@ -6,6 +6,8 @@ import Garage from './pages/Garage';
 import Historial from './pages/Historial';
 import Estadisticas from './pages/Estadisticas';
 
+import Configuracion from './pages/Configuracion';
+
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
 
@@ -19,6 +21,8 @@ function App() {
         return <Historial />;
       case 'estadisticas':
         return <Estadisticas />;
+      case 'configuracion':
+        return <Configuracion />;
       default:
         return <Dashboard onNavigate={setCurrentPage} />;
     }
