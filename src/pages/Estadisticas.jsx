@@ -1,5 +1,6 @@
 import { BarChart3, TrendingUp, DollarSign, Activity } from 'lucide-react';
 import StatCard from '../components/StatCard';
+import ExpensesChart from '../components/ExpensesChart';
 
 const Estadisticas = () => {
     return (
@@ -46,14 +47,15 @@ const Estadisticas = () => {
 
             {/* Placeholder for Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                // ... inside the component ...
+
                 <div className="card-cod">
                     <h3 className="text-xl font-display font-bold text-cod-text mb-4 uppercase tracking-wide">
                         Gastos por Mes
                     </h3>
-                    <div className="h-64 flex items-center justify-center border border-cod-border rounded-sm">
-                        <p className="text-cod-text-dim">
-                            Gráfico de gastos (próximamente)
-                        </p>
+                    <div className="h-72 w-full border border-cod-border rounded-sm p-2">
+                        <ExpensesChart />
                     </div>
                 </div>
 

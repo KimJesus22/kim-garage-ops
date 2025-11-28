@@ -1,16 +1,82 @@
-# React + Vite
+# 🚗 Garage Ops - Vehicle Manager (Estilo COD MW)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Dashboard Preview](https://i.imgur.com/placeholder.png) *Nota: Reemplaza esto con una captura real de tu dashboard*
 
-Currently, two official plugins are available:
+Una aplicación web moderna para la gestión integral de vehículos (autos y motos), diseñada con una estética inmersiva inspirada en los menús de **Call of Duty: Modern Warfare**. Combina funcionalidad robusta con una experiencia de usuario premium en modo oscuro.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Características Principales
 
-## React Compiler
+### 🎯 Dashboard Interactivo
+- Vista general del estado de tu garage.
+- Métricas clave: Vehículos activos, gasto total, alertas de mantenimiento.
+- Acceso rápido a las funciones más importantes.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🏎️ Gestión de Garage
+- **Registro de Vehículos**: Agrega autos y motos con detalles completos (marca, modelo, año, foto).
+- **Edición Rápida**: Actualiza el kilometraje directamente desde la tarjeta del vehículo.
+- **Identificación Visual**: Iconos y colores distintivos para cada tipo de vehículo.
 
-## Expanding the ESLint configuration
+### 🔧 Sistema de Mantenimiento Inteligente
+- **Registro de Servicios**: Guarda historial de cambios de aceite, reparaciones, neumáticos, etc.
+- **Alertas Automáticas**:
+  - **Motos**: Aviso de servicio cada 5,000 km.
+  - **Autos**: Aviso de servicio cada 10,000 km.
+- **Notificaciones Urgentes**: Etiqueta "URGENTE" parpadeante cuando se excede el límite de servicio.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 📊 Historial y Estadísticas
+- Registro detallado de todos los servicios realizados con costos y fechas.
+- Visualización clara de gastos y mantenimiento por vehículo.
+
+## 🎨 Diseño y Estética (COD MW)
+- **Modo Oscuro Profundo**: Paleta de colores `cod-dark` y `cod-darker` para reducir fatiga visual.
+- **Acentos Neón**: Verde (`#4ade80`) para estados positivos y Naranja (`#ff6b35`) para alertas.
+- **Tipografía Militar**: Uso de fuentes `Rajdhani` y `Inter` con tracking amplio.
+- **Micro-interacciones**: Efectos de sonido (visuales), bordes brillantes y transiciones suaves.
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Frontend**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Estilos**: [Tailwind CSS v3](https://tailwindcss.com/)
+- **Iconos**: [Lucide React](https://lucide.dev/)
+- **Estado**: React Context API + LocalStorage (Persistencia de datos)
+
+## 🚀 Instalación y Uso
+
+1.  **Clonar el repositorio**
+    ```bash
+    git clone https://github.com/KimJesus22/kim-garage-ops.git
+    cd kim-garage-ops
+    ```
+
+2.  **Instalar dependencias**
+    ```bash
+    npm install
+    ```
+
+3.  **Iniciar servidor de desarrollo**
+    ```bash
+    npm run dev
+    ```
+
+4.  **Construir para producción**
+    ```bash
+    npm run build
+    ```
+
+## 📂 Estructura del Proyecto
+
+```
+src/
+├── components/      # Componentes reutilizables (Cards, Forms, Sidebar)
+├── context/         # Estado global (VehicleContext)
+├── pages/           # Vistas principales (Dashboard, Garage, Historial)
+├── index.css        # Configuración de Tailwind y estilos base
+└── main.jsx         # Punto de entrada
+```
+
+## 🤝 Contribución
+
+Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para sugerir cambios o mejoras.
+
+---
+Desarrollado con ❤️ y estilo táctico.

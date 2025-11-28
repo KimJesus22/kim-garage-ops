@@ -39,6 +39,16 @@ export const VehicleProvider = ({ children }) => {
                 mileage: 12000,
                 photo: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&h=300&fit=crop',
                 services: []
+            },
+            {
+                id: '3',
+                type: 'moto',
+                brand: 'Vento',
+                model: 'Lithium',
+                year: 2024,
+                mileage: 8500,
+                photo: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.galgo.com%2Fmx%2Fmotos%2FMX645-vento-lithium-190&psig=AOvVaw1jHoCaH88zTEq3Lwnxzwvh&ust=1764438964151000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCND1gr-1lZEDFQAAAAAdAAAAABAE',
+                services: []
             }
         ];
     });
