@@ -1,19 +1,62 @@
 import { useState } from 'react';
-import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus } from 'lucide-react';
+import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus, Zap, Rocket, ShieldCheck, Heart } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import ServiceForm from './ServiceForm';
 import { generateVehicleReport } from '../utils/pdfGenerator';
 import { calculateCostPerKm } from '../utils/calculations';
 import VehicleRankBadge from './VehicleRankBadge';
+import { formatCurrency } from '../utils/formatters';
+
+const getSpecialBadge = (vehicle) => {
+    const brand = vehicle.brand.toLowerCase();
+    const model = vehicle.model.toLowerCase();
+    const mileage = parseInt(vehicle.mileage);
+
+    // Caso 'El Inmortal': Nissan Tsuru > 300,000 km
+    if (brand.includes('nissan') && model.includes('tsuru') && mileage > 300000) {
+        return {
+            label: '🚕 EL INMORTAL',
+            colorClass: 'bg-yellow-500 text-black border-yellow-300',
+            icon: ShieldCheck
+        };
+    }
+
+    // Caso 'Guerrera': Italika > 15,000 km
+    if (brand.includes('italika') && mileage > 15000) {
+        return {
+            label: '⚡ GUERRERA DEL ASFALTO',
+            colorClass: 'bg-red-600 text-white border-red-400',
+            icon: Zap
+        };
+    }
+
+    // Caso 'Vento Squad': Marca Vento
+    if (brand.includes('vento')) {
+        return {
+            label: '🚀 NITRO READY',
+            colorClass: 'bg-orange-500 text-white border-orange-300',
+            icon: Rocket
+        };
+    }
+
+    // Caso 'Vocho': VW Vocho/Sedan/Beetle
+    if ((brand.includes('vw') || brand.includes('volkswagen')) && (model.includes('vocho') || model.includes('sedan') || model.includes('beetle'))) {
+        return {
+            label: '🐞 PATRIMONIO NACIONAL',
+            colorClass: 'bg-green-600 text-white border-green-400',
+            icon: Heart
+        };
+    }
+
+    return null;
+};
 
 const VehicleCard = ({ vehicle }) => {
-    // ... existing hooks ...
     const { updateVehicle } = useVehicles();
     const [isEditingMileage, setIsEditingMileage] = useState(false);
     const [newMileage, setNewMileage] = useState(vehicle.mileage);
     const [showServiceForm, setShowServiceForm] = useState(false);
 
-    // ... existing handlers ...
     const handleSaveMileage = () => {
         if (newMileage && newMileage > 0) {
             updateVehicle(vehicle.id, { mileage: parseInt(newMileage) });
@@ -28,7 +71,6 @@ const VehicleCard = ({ vehicle }) => {
 
     const VehicleIcon = vehicle.type === 'auto' ? Car : Bike;
 
-    // ... existing alert logic ...
     const getLastOilChange = () => {
         if (!vehicle.services || vehicle.services.length === 0) return null;
         return vehicle.services
@@ -59,10 +101,12 @@ const VehicleCard = ({ vehicle }) => {
         costColor = 'text-cod-orange';
     }
 
+    // Easter Egg Badge
+    const specialBadge = getSpecialBadge(vehicle);
+
     return (
         <>
             <div className={`card-cod group hover:border-neon-green/30 overflow-hidden relative ${isUrgent ? 'border-cod-orange shadow-neon-orange' : ''}`}>
-                {/* ... existing content ... */}
                 {isUrgent && (
                     <div className="absolute top-0 right-0 z-10">
                         <div className="bg-cod-orange text-cod-darker text-xs font-bold px-3 py-1 flex items-center gap-1 animate-pulse">
@@ -99,6 +143,14 @@ const VehicleCard = ({ vehicle }) => {
                 {/* Información */}
                 <div className="space-y-3">
                     <div>
+                        {/* Special Badge Render */}
+                        {specialBadge && (
+                            <div className={`mb-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider border animate-bounce ${specialBadge.colorClass}`}>
+                                <specialBadge.icon size={12} />
+                                {specialBadge.label}
+                            </div>
+                        )}
+
                         <div className="flex justify-between items-start">
                             <div>
                                 <h3 className="text-xl font-display font-bold text-cod-text leading-tight">
@@ -118,7 +170,7 @@ const VehicleCard = ({ vehicle }) => {
                         <div className={`flex items-center gap-1.5 ${costColor}`}>
                             <CostIcon size={16} />
                             <span className="font-mono font-bold text-sm">
-                                ${costPerKm.toFixed(2)} / km
+                                {formatCurrency(costPerKm)} / km
                             </span>
                         </div>
                     </div>

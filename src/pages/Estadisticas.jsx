@@ -1,104 +1,150 @@
-import { BarChart3, TrendingUp, DollarSign, Activity } from 'lucide-react';
-import StatCard from '../components/StatCard';
-import ExpensesChart from '../components/ExpensesChart';
+import { useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { DollarSign, Activity, Wrench, TrendingUp, Car, Bike } from 'lucide-react';
+import { useVehicles } from '../context/VehicleContext';
+import { formatCurrency } from '../utils/formatters';
 
 const Estadisticas = () => {
+    const { vehicles } = useVehicles();
+
+    // --- Data Aggregation ---
+    const stats = useMemo(() => {
+        let totalCost = 0;
+        let totalKm = 0;
+        let totalServices = 0;
+        const monthlyExpenses = {};
+
+        // Initialize last 6 months
+        const months = [];
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date();
+            d.setMonth(d.getMonth() - i);
+            const monthKey = d.toLocaleString('es-MX', { month: 'short' });
+            const formattedMonth = monthKey.charAt(0).toUpperCase() + monthKey.slice(1);
+            months.push(formattedMonth);
+            monthlyExpenses[formattedMonth] = 0;
+        }
+
+        vehicles.forEach(vehicle => {
+            totalKm += parseInt(vehicle.mileage) || 0;
+
+            if (vehicle.services) {
+                totalServices += vehicle.services.length;
+                vehicle.services.forEach(service => {
+                    const cost = parseFloat(service.cost) || 0;
+                    totalCost += cost;
+
+                    const serviceDate = new Date(service.date);
+                    const monthKey = serviceDate.toLocaleString('es-MX', { month: 'short' });
+                    const formattedMonth = monthKey.charAt(0).toUpperCase() + monthKey.slice(1);
+
+                    if (monthlyExpenses[formattedMonth] !== undefined) {
+                        monthlyExpenses[formattedMonth] += cost;
+                    }
+                });
+            }
+        });
+
+        const chartData = months.map(month => ({
+            name: month,
+            amount: monthlyExpenses[month]
+        }));
+
+        return { totalCost, totalKm, totalServices, chartData };
+    }, [vehicles]);
+
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-cod-panel border border-cod-border p-3 rounded-sm shadow-lg">
+                    <p className="text-cod-text font-bold mb-1">{label}</p>
+                    <p className="text-neon-green font-mono">
+                        {formatCurrency(payload[0].value)}
+                    </p>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div>
-                <h1 className="text-4xl font-display font-bold text-cod-text mb-2">
-                    Estadísticas
-                </h1>
-                <p className="text-cod-text-dim uppercase tracking-wide text-sm">
-                    Métricas y análisis de uso
-                </p>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    title="Gasto Mensual"
-                    value="$3,800"
-                    icon={DollarSign}
-                    variant="success"
-                    trend={{ positive: false, text: '-12% vs mes anterior' }}
-                />
-                <StatCard
-                    title="Kilometraje Total"
-                    value="57,000 km"
-                    icon={Activity}
-                    variant="default"
-                    trend={{ positive: true, text: '+2,500 km este mes' }}
-                />
-                <StatCard
-                    title="Promedio por Vehículo"
-                    value="28,500 km"
-                    icon={TrendingUp}
-                    variant="default"
-                />
-                <StatCard
-                    title="Servicios Realizados"
-                    value="12"
-                    icon={BarChart3}
-                    variant="success"
-                />
-            </div>
-
-            {/* Placeholder for Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                // ... inside the component ...
-
-                <div className="card-cod">
-                    <h3 className="text-xl font-display font-bold text-cod-text mb-4 uppercase tracking-wide">
-                        Gastos por Mes
-                    </h3>
-                    <div className="h-72 w-full border border-cod-border rounded-sm p-2">
-                        <ExpensesChart />
+        <div className="space-y-8 mb-8">
+            {/* KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="card-cod flex items-center gap-4 border-l-4 border-l-neon-green">
+                    <div className="p-4 bg-neon-green/10 rounded-full text-neon-green">
+                        <DollarSign size={32} />
+                    </div>
+                    <div>
+                        <p className="text-cod-text-dim text-xs uppercase tracking-wider">Inversión Total</p>
+                        <p className="text-2xl font-display font-bold text-cod-text">
+                            {formatCurrency(stats.totalCost)}
+                        </p>
                     </div>
                 </div>
 
-                <div className="card-cod">
-                    <h3 className="text-xl font-display font-bold text-cod-text mb-4 uppercase tracking-wide">
-                        Kilometraje Acumulado
-                    </h3>
-                    <div className="h-64 flex items-center justify-center border border-cod-border rounded-sm">
-                        <p className="text-cod-text-dim">
-                            Gráfico de kilometraje (próximamente)
+                <div className="card-cod flex items-center gap-4 border-l-4 border-l-cod-orange">
+                    <div className="p-4 bg-cod-orange/10 rounded-full text-cod-orange">
+                        <Wrench size={32} />
+                    </div>
+                    <div>
+                        <p className="text-cod-text-dim text-xs uppercase tracking-wider">Servicios Totales</p>
+                        <p className="text-2xl font-display font-bold text-cod-text">
+                            {stats.totalServices}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="card-cod flex items-center gap-4 border-l-4 border-l-cod-text-dim">
+                    <div className="p-4 bg-cod-gray/20 rounded-full text-cod-text-dim">
+                        <Activity size={32} />
+                    </div>
+                    <div>
+                        <p className="text-cod-text-dim text-xs uppercase tracking-wider">Kms Recorridos</p>
+                        <p className="text-2xl font-display font-bold text-cod-text">
+                            {stats.totalKm.toLocaleString()} km
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Additional Stats */}
+            {/* Gráfico de Gastos */}
             <div className="card-cod">
-                <h3 className="text-xl font-display font-bold text-cod-text mb-6 uppercase tracking-wide">
-                    Desglose por Vehículo
-                </h3>
-                <div className="space-y-4">
-                    {[
-                        { name: 'Toyota Corolla', mileage: 45000, services: 8, cost: 12500 },
-                        { name: 'Yamaha MT-07', mileage: 12000, services: 4, cost: 6800 },
-                    ].map((vehicle, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center justify-between p-4 bg-cod-darker rounded-sm border border-cod-border"
+                <h2 className="text-xl font-display font-bold text-cod-text mb-6 flex items-center gap-2">
+                    <TrendingUp className="text-neon-green" />
+                    TENDENCIA DE GASTOS (ÚLTIMOS 6 MESES)
+                </h2>
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            data={stats.chartData}
+                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                         >
-                            <div className="flex-1">
-                                <h4 className="font-semibold text-cod-text mb-1">{vehicle.name}</h4>
-                                <p className="text-sm text-cod-text-dim">
-                                    {vehicle.mileage.toLocaleString()} km • {vehicle.services} servicios
-                                </p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-xl font-display font-bold text-neon-green">
-                                    ${vehicle.cost.toLocaleString()}
-                                </p>
-                                <p className="text-xs text-cod-text-dim">Gasto total</p>
-                            </div>
-                        </div>
-                    ))}
+                            <CartesianGrid strokeDasharray="3 3" stroke="#2d3748" vertical={false} />
+                            <XAxis
+                                dataKey="name"
+                                stroke="#94a3b8"
+                                tick={{ fill: '#94a3b8', fontSize: 12 }}
+                                axisLine={{ stroke: '#2d3748' }}
+                                tickLine={false}
+                            />
+                            <YAxis
+                                stroke="#94a3b8"
+                                tick={{ fill: '#94a3b8', fontSize: 12 }}
+                                axisLine={false}
+                                tickLine={false}
+                                tickFormatter={(value) => `$${value}`}
+                            />
+                            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }} />
+                            <Bar
+                                dataKey="amount"
+                                fill="#4ade80"
+                                radius={[4, 4, 0, 0]}
+                                barSize={50}
+                                className="filter drop-shadow-[0_0_8px_rgba(74,222,128,0.3)]"
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </div>

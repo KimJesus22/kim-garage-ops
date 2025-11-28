@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { DollarSign, Activity, Wrench } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
+import { formatCurrency } from '../utils/formatters';
 
 const DashboardStats = () => {
     const { vehicles } = useVehicles();
@@ -60,7 +61,7 @@ const DashboardStats = () => {
                 <div className="bg-cod-panel border border-cod-border p-3 rounded-sm shadow-lg">
                     <p className="text-cod-text font-bold mb-1">{label}</p>
                     <p className="text-neon-green font-mono">
-                        ${payload[0].value.toLocaleString()}
+                        {formatCurrency(payload[0].value)}
                     </p>
                 </div>
             );
@@ -77,7 +78,7 @@ const DashboardStats = () => {
                     <div>
                         <p className="text-cod-text-dim text-xs uppercase tracking-wider mb-1">Costo Total Flota</p>
                         <p className="text-3xl font-display font-bold text-neon-green">
-                            ${stats.totalCost.toLocaleString()}
+                            {formatCurrency(stats.totalCost)}
                         </p>
                     </div>
                     <div className="p-3 bg-neon-green/10 rounded-full text-neon-green">

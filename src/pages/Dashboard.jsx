@@ -1,6 +1,7 @@
 import { useVehicles } from '../context/VehicleContext';
 import VehicleCard from '../components/VehicleCard';
 import DashboardStats from '../components/DashboardStats';
+import TripSimulator from '../components/TripSimulator';
 import { Plus } from 'lucide-react';
 
 const Dashboard = ({ onNavigate }) => {
@@ -29,6 +30,9 @@ const Dashboard = ({ onNavigate }) => {
 
             {/* Advanced Stats Panel */}
             <DashboardStats />
+
+            {/* Trip Simulator */}
+            <TripSimulator />
 
             {/* Active Vehicles Grid */}
             <div>

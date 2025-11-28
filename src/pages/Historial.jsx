@@ -1,83 +1,69 @@
-import { History, Calendar, Car } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
+import { Calendar, DollarSign, Wrench, Car, Bike } from 'lucide-react';
+import { formatCurrency } from '../utils/formatters';
 
 const Historial = () => {
     const { vehicles } = useVehicles();
 
-    // Combinar y ordenar todos los servicios de todos los vehículos
-    const allServices = vehicles.flatMap(vehicle =>
-        (vehicle.services || []).map(service => ({
+    // Flatten all services into a single array
+    const allServices = vehicles.flatMap(vehicle => {
+        if (!vehicle.services) return [];
+        return vehicle.services.map(service => ({
             ...service,
             vehicleName: `${vehicle.brand} ${vehicle.model}`,
-            vehicleType: vehicle.type
-        }))
-    ).sort((a, b) => new Date(b.date) - new Date(a.date));
+            vehicleType: vehicle.type,
+            vehicleId: vehicle.id
+        }));
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
-        <div className="space-y-8">
-            {/* Header */}
-            <div>
-                <h1 className="text-4xl font-display font-bold text-cod-text mb-2">
-                    Historial
-                </h1>
-                <p className="text-cod-text-dim uppercase tracking-wide text-sm">
-                    Registro de mantenimientos y servicios
-                </p>
-            </div>
+        <div className="space-y-6">
+            <h1 className="text-4xl font-display font-bold text-cod-text mb-2">
+                Historial de Operaciones
+            </h1>
+            <p className="text-cod-text-dim uppercase tracking-wide text-sm mb-8">
+                Registro completo de mantenimiento
+            </p>
 
-            {/* Historial List */}
             {allServices.length === 0 ? (
-                <div className="card-cod text-center py-16">
-                    <History size={64} className="mx-auto text-cod-text-dim mb-4" />
-                    <h2 className="text-2xl font-display font-bold text-cod-text mb-2">
-                        Sin historial
-                    </h2>
-                    <p className="text-cod-text-dim">
-                        Aún no hay registros de mantenimiento
+                <div className="card-cod text-center py-12">
+                    <Wrench size={48} className="mx-auto text-cod-text-dim mb-4" />
+                    <p className="text-cod-text-dim text-lg">
+                        No hay registros de mantenimiento en el sistema
                     </p>
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {allServices.map((item) => (
-                        <div key={item.id} className="card-cod hover:border-neon-green/30">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <Calendar size={16} className="text-neon-green" />
-                                        <span className="text-sm text-cod-text-dim">
-                                            {new Date(item.date).toLocaleDateString('es-ES', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric'
-                                            })}
+                    {allServices.map((service, index) => (
+                        <div
+                            key={index}
+                            className="bg-cod-panel border border-cod-border p-4 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-cod-border-light transition-colors"
+                        >
+                            <div className="flex items-start gap-4">
+                                <div className={`p-3 rounded-sm ${service.vehicleType === 'auto' ? 'bg-neon-green/10 text-neon-green' : 'bg-cod-orange/10 text-cod-orange'}`}>
+                                    {service.vehicleType === 'auto' ? <Car size={20} /> : <Bike size={20} />}
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-cod-text">
+                                        {service.type}
+                                    </h3>
+                                    <p className="text-cod-text-dim text-sm">
+                                        {service.vehicleName}
+                                    </p>
+                                    <div className="flex items-center gap-4 mt-2 text-xs text-cod-text-dim uppercase tracking-wider">
+                                        <span className="flex items-center gap-1">
+                                            <Calendar size={12} />
+                                            {new Date(service.date).toLocaleDateString('es-MX')}
                                         </span>
-                                        <span className="text-cod-text-dim">•</span>
-                                        <span className="text-sm text-cod-text-dim">
-                                            {item.mileageAtService.toLocaleString()} km
+                                        <span>
+                                            {service.mileageAtService.toLocaleString()} km
                                         </span>
                                     </div>
-                                    <h3 className="text-xl font-display font-bold text-cod-text mb-1">
-                                        {item.description}
-                                    </h3>
-                                    <p className="text-cod-text-dim text-sm mb-2 flex items-center gap-2">
-                                        <Car size={14} />
-                                        {item.vehicleName}
-                                    </p>
-                                    <span className={`
-                    inline-block px-3 py-1 rounded-sm text-xs font-semibold uppercase tracking-wider
-                    ${item.type === 'Cambio de Aceite'
-                                            ? 'bg-neon-green/20 text-neon-green border border-neon-green/50'
-                                            : 'bg-cod-orange/20 text-cod-orange border border-cod-orange/50'
-                                        }
-                  `}>
-                                        {item.type}
-                                    </span>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-2xl font-display font-bold text-neon-green">
-                                        ${item.cost.toLocaleString()}
-                                    </p>
-                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-neon-green font-mono font-bold text-lg">
+                                {formatCurrency(service.cost)}
                             </div>
                         </div>
                     ))}

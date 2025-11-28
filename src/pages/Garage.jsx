@@ -3,6 +3,7 @@ import { Plus, Car } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import VehicleCard from '../components/VehicleCard';
 import VehicleForm from '../components/VehicleForm';
+import Estadisticas from './Estadisticas';
 
 const Garage = () => {
     const { vehicles } = useVehicles();
@@ -28,6 +29,9 @@ const Garage = () => {
                     Agregar Vehículo
                 </button>
             </div>
+
+            {/* Estadísticas Resumen */}
+            {vehicles.length > 0 && <Estadisticas />}
 
             {/* Vehicles Grid */}
             {vehicles.length === 0 ? (
