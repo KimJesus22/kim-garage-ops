@@ -1,7 +1,7 @@
-import { Car, DollarSign, Wrench, Plus } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import VehicleCard from '../components/VehicleCard';
-import StatCard from '../components/StatCard';
+import DashboardStats from '../components/DashboardStats';
+import { Plus } from 'lucide-react';
 
 const Dashboard = ({ onNavigate }) => {
     const { vehicles } = useVehicles();
@@ -12,10 +12,10 @@ const Dashboard = ({ onNavigate }) => {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-4xl font-display font-bold text-cod-text mb-2">
-                        Dashboard
+                        Centro de Mando
                     </h1>
                     <p className="text-cod-text-dim uppercase tracking-wide text-sm">
-                        Resumen de tu garage
+                        Visión general de la flota
                     </p>
                 </div>
                 <button
@@ -27,47 +27,26 @@ const Dashboard = ({ onNavigate }) => {
                 </button>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <StatCard
-                    title="Vehículos Activos"
-                    value={vehicles.length}
-                    icon={Car}
-                    variant="success"
-                />
-                <StatCard
-                    title="Gasto Total"
-                    value="$0"
-                    icon={DollarSign}
-                    variant="default"
-                />
-                <StatCard
-                    title="Próximo Mantenimiento"
-                    value="N/A"
-                    icon={Wrench}
-                    variant="warning"
-                />
-            </div>
+            {/* Advanced Stats Panel */}
+            <DashboardStats />
 
-            {/* Vehicles Grid */}
+            {/* Active Vehicles Grid */}
             <div>
-                <h2 className="text-2xl font-display font-bold text-cod-text mb-4 uppercase tracking-wide">
-                    Mis Vehículos
+                <h2 className="text-xl font-display font-bold text-cod-text mb-4 uppercase tracking-wide border-b border-cod-border pb-2">
+                    Vehículos Activos
                 </h2>
-
                 {vehicles.length === 0 ? (
-                    <div className="card-cod text-center py-12">
-                        <Car size={48} className="mx-auto text-cod-text-dim mb-4" />
-                        <p className="text-cod-text-dim text-lg mb-4">
+                    <div className="flex flex-col items-center justify-center p-8 bg-cod-dark-blue rounded-lg shadow-lg text-center">
+                        <p className="text-lg text-cod-text-dim mb-4">
                             No tienes vehículos registrados
-                        </p>
+                        </p >
                         <button
                             onClick={() => onNavigate('garage')}
                             className="btn-primary"
                         >
                             Agregar tu primer vehículo
                         </button>
-                    </div>
+                    </div >
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {vehicles.map((vehicle) => (
@@ -75,8 +54,8 @@ const Dashboard = ({ onNavigate }) => {
                         ))}
                     </div>
                 )}
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

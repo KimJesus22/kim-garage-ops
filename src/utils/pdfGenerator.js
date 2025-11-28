@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable'; // <--- 1. CAMBIO: Importar la función directamente
 
 export const generateVehicleReport = (vehicle) => {
     const doc = new jsPDF();
@@ -47,7 +47,6 @@ export const generateVehicleReport = (vehicle) => {
     const tableRows = [];
 
     if (vehicle.services && vehicle.services.length > 0) {
-        // Sort services by date descending
         const sortedServices = [...vehicle.services].sort((a, b) => new Date(b.date) - new Date(a.date));
 
         sortedServices.forEach(service => {
@@ -63,13 +62,14 @@ export const generateVehicleReport = (vehicle) => {
         tableRows.push(["-", "Sin registros de mantenimiento", "-", "-"]);
     }
 
-    doc.autoTable({
+    // <--- 2. CAMBIO: Usar la función importada pasando 'doc' como primer argumento
+    autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: tableStartY,
         theme: 'grid',
         headStyles: {
-            fillColor: [40, 40, 40], // Dark gray/black
+            fillColor: [40, 40, 40],
             textColor: [255, 255, 255],
             fontStyle: 'bold',
             halign: 'center'

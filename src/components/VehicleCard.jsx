@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText } from 'lucide-react';
+import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import ServiceForm from './ServiceForm';
 import { generateVehicleReport } from '../utils/pdfGenerator';
+import { calculateCostPerKm } from '../utils/calculations';
+import VehicleRankBadge from './VehicleRankBadge';
 
 const VehicleCard = ({ vehicle }) => {
+    // ... existing hooks ...
     const { updateVehicle } = useVehicles();
-    // ... existing state ...
     const [isEditingMileage, setIsEditingMileage] = useState(false);
     const [newMileage, setNewMileage] = useState(vehicle.mileage);
     const [showServiceForm, setShowServiceForm] = useState(false);
@@ -41,10 +43,26 @@ const VehicleCard = ({ vehicle }) => {
     const isUrgent = lastOilChange && (vehicle.mileage >= lastOilChange.mileageAtService + 10000);
     const isDueSoon = nextServiceKm && vehicle.mileage >= nextServiceKm;
 
+    // Cost Per Km Logic
+    const costPerKm = calculateCostPerKm(vehicle);
+    let costStatus = 'normal';
+    let CostIcon = Minus;
+    let costColor = 'text-cod-text-dim';
+
+    if (costPerKm < 1.00) {
+        costStatus = 'efficient';
+        CostIcon = TrendingDown;
+        costColor = 'text-neon-green';
+    } else if (costPerKm > 3.00) {
+        costStatus = 'high';
+        CostIcon = TrendingUp;
+        costColor = 'text-cod-orange';
+    }
+
     return (
         <>
             <div className={`card-cod group hover:border-neon-green/30 overflow-hidden relative ${isUrgent ? 'border-cod-orange shadow-neon-orange' : ''}`}>
-                {/* ... existing content (Urgent label, Image, Info) ... */}
+                {/* ... existing content ... */}
                 {isUrgent && (
                     <div className="absolute top-0 right-0 z-10">
                         <div className="bg-cod-orange text-cod-darker text-xs font-bold px-3 py-1 flex items-center gap-1 animate-pulse">
@@ -81,12 +99,28 @@ const VehicleCard = ({ vehicle }) => {
                 {/* Información */}
                 <div className="space-y-3">
                     <div>
-                        <h3 className="text-xl font-display font-bold text-cod-text">
-                            {vehicle.brand} {vehicle.model}
-                        </h3>
-                        <p className="text-cod-text-dim text-sm uppercase tracking-wide">
-                            Año {vehicle.year}
-                        </p>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h3 className="text-xl font-display font-bold text-cod-text leading-tight">
+                                    {vehicle.brand} {vehicle.model}
+                                </h3>
+                                <p className="text-cod-text-dim text-sm uppercase tracking-wide">
+                                    Año {vehicle.year}
+                                </p>
+                            </div>
+                            <VehicleRankBadge mileage={vehicle.mileage} />
+                        </div>
+                    </div>
+
+                    {/* Costo Operativo (Nuevo) */}
+                    <div className="flex items-center justify-between py-2 border-b border-cod-border/50">
+                        <span className="text-xs text-cod-text-dim uppercase tracking-wider">Costo Operativo</span>
+                        <div className={`flex items-center gap-1.5 ${costColor}`}>
+                            <CostIcon size={16} />
+                            <span className="font-mono font-bold text-sm">
+                                ${costPerKm.toFixed(2)} / km
+                            </span>
+                        </div>
                     </div>
 
                     {/* Estado de Mantenimiento */}
