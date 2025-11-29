@@ -10,6 +10,7 @@ const VehicleForm = ({ onClose }) => {
         model: '',
         year: new Date().getFullYear(),
         mileage: '',
+        plate: '',
         photo: ''
     });
 
@@ -121,8 +122,8 @@ const VehicleForm = ({ onClose }) => {
                         </div>
                     </div>
 
-                    {/* Año y Kilometraje */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Año, Kilometraje y Placa */}
+                    <div className="grid grid-cols-3 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
                                 Año
@@ -148,6 +149,19 @@ const VehicleForm = ({ onClose }) => {
                                 className="input-cod w-full"
                                 placeholder="0"
                                 min="0"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
+                                Placa
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.plate}
+                                onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
+                                className="input-cod w-full uppercase"
+                                placeholder="ABC-123"
                                 required
                             />
                         </div>
