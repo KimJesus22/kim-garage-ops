@@ -49,7 +49,7 @@
 
   /* COD MW Button Styles */
   .btn-primary {
-    @apply bg-neon-green text-cod-darker font-semibold px-6 py-2.5 rounded-sm hover:bg-neon-green-dark transition-all duration-200 hover:shadow-neon-green uppercase tracking-wider text-sm;
+    @apply bg-neon-green text-cod-darker font-semibold px-6 py-2.5 rounded-sm hover:bg-neon-green-dark transition-all duration-200 hover:shadow-neon-green uppercase tracking-wider text-sm active:scale-95;
   }
 
   .btn-secondary {

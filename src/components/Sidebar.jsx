@@ -1,12 +1,16 @@
+import { Link, useLocation } from 'react-router-dom';
 import { Car, History, BarChart3, Settings } from 'lucide-react';
 
-const Sidebar = ({ currentPage, onNavigate }) => {
+const Sidebar = () => {
+    const location = useLocation();
+    const currentPath = location.pathname;
+
     const menuItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: Car },
-        { id: 'garage', label: 'Garage', icon: Car },
-        { id: 'historial', label: 'Historial', icon: History },
-        { id: 'estadisticas', label: 'Estadísticas', icon: BarChart3 },
-        { id: 'configuracion', label: 'Configuración', icon: Settings },
+        { path: '/dashboard', label: 'Dashboard', icon: Car },
+        { path: '/garage', label: 'Garage', icon: Car },
+        { path: '/historial', label: 'Historial', icon: History },
+        { path: '/estadisticas', label: 'Estadísticas', icon: BarChart3 },
+        { path: '/configuracion', label: 'Configuración', icon: Settings },
     ];
 
     return (
@@ -25,12 +29,12 @@ const Sidebar = ({ currentPage, onNavigate }) => {
             <nav className="flex-1 p-4 space-y-2">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = currentPage === item.id;
+                    const isActive = currentPath === item.path;
 
                     return (
-                        <button
-                            key={item.id}
-                            onClick={() => onNavigate(item.id)}
+                        <Link
+                            key={item.path}
+                            to={item.path}
                             className={`
                 w-full flex items-center gap-3 px-4 py-3 rounded-sm
                 transition-all duration-200 uppercase tracking-wider text-sm font-semibold
@@ -42,7 +46,7 @@ const Sidebar = ({ currentPage, onNavigate }) => {
                         >
                             <Icon size={20} />
                             <span>{item.label}</span>
-                        </button>
+                        </Link>
                     );
                 })}
             </nav>

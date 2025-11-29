@@ -1,8 +1,20 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { DollarSign, Activity, Wrench } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import { formatCurrency } from '../utils/formatters';
+import { motion, useSpring, useTransform } from 'framer-motion';
+
+const AnimatedCounter = ({ value, formatter = (v) => v }) => {
+    const spring = useSpring(0, { bounce: 0, duration: 2000 });
+    const display = useTransform(spring, (current) => formatter(Math.floor(current)));
+
+    useEffect(() => {
+        spring.set(value);
+    }, [spring, value]);
+
+    return <motion.span>{display}</motion.span>;
+};
 
 const DashboardStats = () => {
     const { vehicles } = useVehicles();
@@ -78,7 +90,7 @@ const DashboardStats = () => {
                     <div>
                         <p className="text-cod-text-dim text-xs uppercase tracking-wider mb-1">Costo Total Flota</p>
                         <p className="text-3xl font-display font-bold text-neon-green">
-                            {formatCurrency(stats.totalCost)}
+                            <AnimatedCounter value={stats.totalCost} formatter={formatCurrency} />
                         </p>
                     </div>
                     <div className="p-3 bg-neon-green/10 rounded-full text-neon-green">
@@ -91,7 +103,7 @@ const DashboardStats = () => {
                     <div>
                         <p className="text-cod-text-dim text-xs uppercase tracking-wider mb-1">Kms Recorridos</p>
                         <p className="text-3xl font-display font-bold text-cod-text">
-                            {stats.totalKm.toLocaleString()}
+                            <AnimatedCounter value={stats.totalKm} formatter={(v) => v.toLocaleString()} />
                         </p>
                     </div>
                     <div className="p-3 bg-cod-orange/10 rounded-full text-cod-orange">
@@ -104,7 +116,7 @@ const DashboardStats = () => {
                     <div>
                         <p className="text-cod-text-dim text-xs uppercase tracking-wider mb-1">Servicios Realizados</p>
                         <p className="text-3xl font-display font-bold text-cod-text">
-                            {stats.totalServices}
+                            <AnimatedCounter value={stats.totalServices} />
                         </p>
                     </div>
                     <div className="p-3 bg-cod-gray/20 rounded-full text-cod-text-dim">
