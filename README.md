@@ -27,17 +27,30 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 - Registro detallado de todos los servicios realizados con costos y fechas.
 - Visualización clara de gastos y mantenimiento por vehículo.
 
-## 🎨 Diseño y Estética (COD MW)
+### 🎨 Diseño y Estética (COD MW)
 - **Modo Oscuro Profundo**: Paleta de colores `cod-dark` y `cod-darker` para reducir fatiga visual.
 - **Acentos Neón**: Verde (`#4ade80`) para estados positivos y Naranja (`#ff6b35`) para alertas.
 - **Tipografía Militar**: Uso de fuentes `Rajdhani` y `Inter` con tracking amplio.
 - **Micro-interacciones**: Efectos de sonido (visuales), bordes brillantes y transiciones suaves.
+- **Motion UI**: Transiciones de página fluidas y contadores animados para un "Game Feel" inmersivo.
+- **Temas Dinámicos**: Personalización en tiempo real con temas Tactical (Verde), Blink (Rosa) y Army (Morado).
+
+### 🚀 Nuevas Funcionalidades (v2.0)
+- **Landing Page de Alto Impacto**: Entrada inmersiva con animaciones en cascada.
+- **Sistema de Temas**: Selector flotante para cambiar la estética de la app al instante.
+- **Etiquetado QR**: Generación de tarjetas de identificación con código QR para cada vehículo.
+- **Evidencia Fotográfica**: Adjunta fotos comprimidas a los registros de servicio.
+- **Eficiencia de Combustible**: Cálculo automático de Km/L y semáforo de rendimiento.
 
 ## 🛠️ Tecnologías Utilizadas
 
 - **Frontend**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
 - **Estilos**: [Tailwind CSS v3](https://tailwindcss.com/)
+- **Animaciones**: [Framer Motion](https://www.framer.com/motion/)
+- **Enrutamiento**: [React Router](https://reactrouter.com/)
+- **Gráficos**: [Recharts](https://recharts.org/)
 - **Iconos**: [Lucide React](https://lucide.dev/)
+- **Utilidades**: `jspdf`, `qrcode.react`, `html2canvas`
 - **Estado**: React Context API + LocalStorage (Persistencia de datos)
 
 ## 🚀 Instalación y Uso
@@ -67,10 +80,10 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 
 ```
 src/
-├── components/      # Componentes reutilizables (Cards, Forms, Sidebar)
+├── components/      # Componentes reutilizables (Cards, Forms, Sidebar, ThemeSelector)
 ├── context/         # Estado global (VehicleContext)
-├── pages/           # Vistas principales (Dashboard, Garage, Historial)
-├── index.css        # Configuración de Tailwind y estilos base
+├── pages/           # Vistas principales (Landing, Dashboard, Garage, Historial)
+├── index.css        # Configuración de Tailwind y variables CSS para temas
 └── main.jsx         # Punto de entrada
 ```
 

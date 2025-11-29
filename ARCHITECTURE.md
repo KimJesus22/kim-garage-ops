@@ -7,7 +7,9 @@ El proyecto está construido como una **Single Page Application (SPA)** moderna 
 ### Stack Tecnológico
 - **Core**: React 18, JavaScript (ES6+).
 - **Build Tool**: Vite (Rápido HMR y optimización de build).
-- **Estilos**: Tailwind CSS v3 (Utility-first, diseño responsivo y tema personalizado "COD MW").
+- **Estilos**: Tailwind CSS v3 (Utility-first) + Variables CSS (Theming Dinámico).
+- **Animaciones**: Framer Motion (Transiciones y Micro-interacciones).
+- **Enrutamiento**: React Router DOM (Navegación SPA).
 - **Persistencia**: LocalStorage (Persistencia de datos del lado del cliente).
 
 ## 2. Flujo de Datos (Data Flow)
@@ -28,6 +30,7 @@ graph TD
     Card -->|Action: addService| Context
     Card -->|Action: updateVehicle| Context
     Form[VehicleForm] -->|Action: addVehicle| Context
+    Landing[Landing Page] -->|Navigate| Dashboard
 ```
 
 1.  **Fuente de Verdad**: `VehicleContext` mantiene el estado de `vehicles` (array de objetos).
@@ -45,10 +48,15 @@ src/
 │   ├── VehicleCard.jsx    # Tarjeta principal de visualización de vehículo
 │   ├── ServiceForm.jsx    # Formulario modal para registro de mantenimiento
 │   ├── DashboardStats.jsx # Panel de KPIs y gráficos
-│   └── TripSimulator.jsx  # Herramienta de simulación de rutas
+│   ├── TripSimulator.jsx  # Herramienta de simulación de rutas
+│   ├── PageTransition.jsx # Wrapper para animaciones de página
+│   ├── ThemeSelector.jsx  # Selector flotante de temas
+│   ├── VehicleQR.jsx      # Generador de tarjetas de identificación
+│   └── FuelTracker.jsx    # Modal de registro de combustible
 ├── context/          # Lógica de estado global
 │   └── VehicleContext.jsx # Provider y lógica de negocio (CRUD)
 ├── pages/            # Vistas principales (Rutas)
+│   ├── Landing.jsx        # Página de bienvenida (High Impact)
 │   ├── Dashboard.jsx      # Vista principal (Centro de Mando)
 │   ├── Garage.jsx         # Gestión de flota
 │   └── Estadisticas.jsx   # Análisis detallado
@@ -60,6 +68,14 @@ src/
 ```
 
 ## 4. Justificación de Librerías
+
+### `framer-motion`
+**Propósito**: Animaciones complejas y transiciones de página.
+**Justificación**: Provee una API declarativa para animaciones de alto rendimiento (GPU accelerated). Esencial para lograr el "Game Feel" y la fluidez en la interfaz (transiciones de entrada, contadores animados, feedback táctil).
+
+### `react-router-dom`
+**Propósito**: Enrutamiento del lado del cliente (SPA).
+**Justificación**: Permite una navegación instantánea entre vistas (Landing, Dashboard, Garage) sin recargar la página, manteniendo el estado y la fluidez de la aplicación.
 
 ### `jspdf` & `jspdf-autotable`
 **Propósito**: Generación de reportes de mantenimiento en formato PDF.

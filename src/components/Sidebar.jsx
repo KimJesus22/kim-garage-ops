@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Car, History, BarChart3, Settings } from 'lucide-react';
+import { Car, History, BarChart3, Settings, Shield, Package } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -8,57 +8,59 @@ const Sidebar = () => {
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: Car },
         { path: '/garage', label: 'Garage', icon: Car },
+        { path: '/inventory', label: 'Inventario', icon: Package },
         { path: '/historial', label: 'Historial', icon: History },
         { path: '/estadisticas', label: 'Estadísticas', icon: BarChart3 },
         { path: '/configuracion', label: 'Configuración', icon: Settings },
     ];
 
     return (
-        <div className="w-64 bg-cod-dark border-r border-cod-border h-screen fixed left-0 top-0 flex flex-col">
-            {/* Logo/Header */}
-            <div className="p-6 border-b border-cod-border">
-                <h1 className="text-2xl font-display font-bold text-neon-green text-glow-green uppercase tracking-wider">
-                    Garage
-                </h1>
-                <p className="text-cod-text-dim text-xs mt-1 uppercase tracking-wide">
-                    Gestor de Vehículos
-                </p>
+        <aside className="fixed left-0 top-0 h-screen w-64 bg-cod-dark border-r border-cod-border flex flex-col z-50">
+            {/* Header */}
+            <div className="p-6 border-b border-cod-border flex items-center gap-3">
+                <div className="bg-neon-green/10 p-2 rounded-sm border border-neon-green/20">
+                    <Shield className="text-neon-green" size={24} />
+                </div>
+                <div>
+                    <h1 className="text-xl font-display font-bold text-cod-text tracking-wider">GARAGE OPS</h1>
+                    <p className="text-[10px] text-cod-text-dim uppercase tracking-[0.2em]">Vehicle Manager</p>
+                </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2">
+            <nav className="flex-1 py-6 px-3 space-y-1">
                 {menuItems.map((item) => {
-                    const Icon = item.icon;
                     const isActive = currentPath === item.path;
-
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
                             className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-sm
-                transition-all duration-200 uppercase tracking-wider text-sm font-semibold
-                ${isActive
-                                    ? 'bg-neon-green/10 text-neon-green border-l-2 border-neon-green shadow-neon-green'
-                                    : 'text-cod-text-dim hover:text-cod-text hover:bg-cod-panel border-l-2 border-transparent'
+                                flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-200 group relative overflow-hidden
+                                ${isActive
+                                    ? 'bg-neon-green/10 text-neon-green border-l-2 border-neon-green'
+                                    : 'text-cod-text-dim hover:bg-cod-panel hover:text-cod-text border-l-2 border-transparent'
                                 }
-              `}
+                            `}
                         >
-                            <Icon size={20} />
-                            <span>{item.label}</span>
+                            <item.icon size={20} className={isActive ? 'animate-pulse' : ''} />
+                            <span className="font-medium tracking-wide text-sm">{item.label}</span>
+
+                            {/* Hover Effect Background */}
+                            <div className={`absolute inset-0 bg-gradient-to-r from-neon-green/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isActive ? 'hidden' : ''}`} />
                         </Link>
                     );
                 })}
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-cod-border">
-                <div className="text-xs text-cod-text-dim text-center">
-                    <p className="uppercase tracking-wide">Estilo COD MW</p>
-                    <p className="text-neon-green mt-1">v1.0.0</p>
+            <div className="p-6 border-t border-cod-border">
+                <div className="flex items-center gap-2 text-cod-text-dim/50">
+                    <div className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
+                    <span className="text-xs uppercase tracking-widest">System Online</span>
                 </div>
             </div>
-        </div>
+        </aside>
     );
 };
 
