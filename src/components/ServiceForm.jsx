@@ -10,6 +10,7 @@ const ServiceForm = ({ onClose, vehicleId }) => {
 
     const [formData, setFormData] = useState({
         type: 'Mantenimiento General',
+        status: 'completed',
         date: new Date().toISOString().split('T')[0],
         laborCost: '',
         notes: ''
@@ -81,6 +82,7 @@ const ServiceForm = ({ onClose, vehicleId }) => {
         // 3. Save service
         addService(vehicleId, {
             type: formData.type,
+            status: formData.status,
             date: formData.date,
             cost: totalCost,
             laborCost: parseFloat(formData.laborCost) || 0,
@@ -136,6 +138,43 @@ const ServiceForm = ({ onClose, vehicleId }) => {
                                     value={formData.date}
                                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                                 />
+                            </div>
+                        </div>
+
+                        {/* Status Selector */}
+                        <div>
+                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">Estado de la Misión</label>
+                            <div className="grid grid-cols-3 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: 'pending' })}
+                                    className={`p-2 rounded-sm border text-xs font-bold uppercase tracking-wider transition-all ${formData.status === 'pending'
+                                        ? 'bg-yellow-500/20 border-yellow-500 text-yellow-500'
+                                        : 'bg-cod-dark border-cod-border text-cod-text-dim hover:border-cod-gray'
+                                        }`}
+                                >
+                                    Pendiente
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: 'in_progress' })}
+                                    className={`p-2 rounded-sm border text-xs font-bold uppercase tracking-wider transition-all ${formData.status === 'in_progress'
+                                        ? 'bg-blue-500/20 border-blue-500 text-blue-500'
+                                        : 'bg-cod-dark border-cod-border text-cod-text-dim hover:border-cod-gray'
+                                        }`}
+                                >
+                                    En Taller
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: 'completed' })}
+                                    className={`p-2 rounded-sm border text-xs font-bold uppercase tracking-wider transition-all ${formData.status === 'completed'
+                                        ? 'bg-neon-green/20 border-neon-green text-neon-green'
+                                        : 'bg-cod-dark border-cod-border text-cod-text-dim hover:border-cod-gray'
+                                        }`}
+                                >
+                                    Completado
+                                </button>
                             </div>
                         </div>
 

@@ -8,6 +8,7 @@ import Garage from './pages/Garage';
 import Historial from './pages/Historial';
 import Estadisticas from './pages/Estadisticas';
 import Inventory from './pages/Inventory';
+import Kanban from './pages/Kanban';
 import Configuracion from './pages/Configuracion';
 import ThemeSelector from './components/ThemeSelector';
 
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/garage" element={<Garage />} />
                 <Route path="/inventory" element={<Inventory />} />
+                <Route path="/kanban" element={<Kanban />} />
                 <Route path="/historial" element={<Historial />} />
                 <Route path="/estadisticas" element={<Estadisticas />} />
                 <Route path="/configuracion" element={<Configuracion />} />

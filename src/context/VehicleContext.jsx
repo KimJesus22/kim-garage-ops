@@ -37,7 +37,25 @@ export const VehicleProvider = ({ children }) => {
             if (v.id === vehicleId) {
                 return {
                     ...v,
-                    services: [...(v.services || []), { ...service, id: Date.now() }]
+                    services: [...(v.services || []), {
+                        ...service,
+                        id: Date.now(),
+                        status: service.status || 'completed' // Default status
+                    }]
+                };
+            }
+            return v;
+        }));
+    };
+
+    const updateServiceStatus = (vehicleId, serviceId, newStatus) => {
+        setVehicles(prev => prev.map(v => {
+            if (v.id === vehicleId) {
+                return {
+                    ...v,
+                    services: v.services.map(s =>
+                        s.id === serviceId ? { ...s, status: newStatus } : s
+                    )
                 };
             }
             return v;
@@ -65,7 +83,7 @@ export const VehicleProvider = ({ children }) => {
     };
 
     return (
-        <VehicleContext.Provider value={{ vehicles, addVehicle, updateVehicle, deleteVehicle, addService, addFuelLog, restoreData }}>
+        <VehicleContext.Provider value={{ vehicles, addVehicle, updateVehicle, deleteVehicle, addService, updateServiceStatus, addFuelLog, restoreData }}>
             {children}
         </VehicleContext.Provider>
     );
