@@ -2,9 +2,11 @@ import { motion } from 'framer-motion';
 import { useVehicles } from '../context/VehicleContext';
 import { Clock, Wrench, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
+import { useTacticalSound } from '../hooks/useTacticalSound';
 
 const Kanban = () => {
     const { vehicles, updateServiceStatus } = useVehicles();
+    const { playSuccess, playClick } = useTacticalSound();
 
     // Flatten all services from all vehicles into a single list with vehicle info
     const allServices = vehicles.flatMap(vehicle =>
@@ -47,6 +49,15 @@ const Kanban = () => {
         if (currentStatus === 'pending') return 'in_progress';
         if (currentStatus === 'in_progress') return 'completed';
         return null;
+    };
+
+    const handleStatusUpdate = (vehicleId, serviceId, newStatus) => {
+        updateServiceStatus(vehicleId, serviceId, newStatus);
+        if (newStatus === 'completed') {
+            playSuccess();
+        } else {
+            playClick();
+        }
     };
 
     return (
@@ -104,7 +115,7 @@ const Kanban = () => {
                                                 <div className="flex justify-end pt-2 border-t border-cod-border/30">
                                                     {getNextStatus(service.status || 'completed') && (
                                                         <button
-                                                            onClick={() => updateServiceStatus(service.vehicleId, service.id, getNextStatus(service.status || 'completed'))}
+                                                            onClick={() => handleStatusUpdate(service.vehicleId, service.id, getNextStatus(service.status || 'completed'))}
                                                             className="text-xs flex items-center gap-1 text-cod-text-dim hover:text-neon-green transition-colors uppercase font-bold tracking-wider"
                                                         >
                                                             Avanzar <ArrowRight size={12} />

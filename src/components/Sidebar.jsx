@@ -1,12 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair, Calendar, LogOut } from 'lucide-react';
+import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair, Calendar, LogOut, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import { useTacticalSound } from '../hooks/useTacticalSound';
 
 const Sidebar = () => {
     const location = useLocation();
     const currentPath = location.pathname;
     const { logout } = useAuth();
+    const { playHover, playClick, isMuted, toggleMute } = useTacticalSound();
 
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -41,6 +43,8 @@ const Sidebar = () => {
                         <Link
                             key={item.path}
                             to={item.path}
+                            onClick={playClick}
+                            onMouseEnter={playHover}
                             className={`
                                 flex items-center gap-3 px-4 py-3 rounded-sm transition-all duration-200 group relative overflow-hidden
                                 ${isActive
@@ -60,8 +64,8 @@ const Sidebar = () => {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t border-cod-border">
-                <div className="flex items-center justify-between mb-4">
+            <div className="p-4 border-t border-cod-border space-y-4">
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-cod-panel flex items-center justify-center text-neon-green font-bold border border-cod-border">
                             OP
@@ -71,7 +75,16 @@ const Sidebar = () => {
                             <p className="text-xs text-cod-text-dim">Nivel 1</p>
                         </div>
                     </div>
-                    <NotificationBell />
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={() => { playClick(); toggleMute(); }}
+                            className="p-2 text-cod-text-dim hover:text-neon-green transition-colors rounded-sm hover:bg-cod-panel"
+                            title={isMuted ? "Activar Sonido" : "Silenciar"}
+                        >
+                            {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                        </button>
+                        <NotificationBell />
+                    </div>
                 </div>
                 <button
                     onClick={logout}

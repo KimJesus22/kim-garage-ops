@@ -2,6 +2,7 @@ import { VehicleProvider } from './context/VehicleContext';
 import { InventoryProvider } from './context/InventoryContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { SoundProvider } from './context/SoundContext';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -52,40 +53,42 @@ function App() {
 
   return (
     <AuthProvider>
-      <VehicleProvider>
-        <InventoryProvider>
-          <NotificationProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/*" element={
-                <ProtectedRoute>
-                  <div className="flex h-screen bg-cod-darker text-cod-text font-sans selection:bg-neon-green selection:text-cod-darker overflow-hidden">
-                    <Sidebar />
-                    <div className="flex-1 flex flex-col min-w-0">
-                      <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-thin scrollbar-thumb-cod-border scrollbar-track-cod-darker">
-                        <div className="max-w-7xl mx-auto w-full">
-                          <CommandPalette />
-                          <Routes>
-                            <Route path="/" element={<Landing />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/garage" element={<Garage />} />
-                            <Route path="/schedule" element={<Schedule />} />
-                            <Route path="/loadouts" element={<Loadouts />} />
-                            <Route path="/inventory" element={<Inventory />} />
-                            <Route path="/kanban" element={<Kanban />} />
-                            <Route path="/historial" element={<Historial />} />
-                            <Route path="/configuracion" element={<Configuracion />} />
-                          </Routes>
+      <SoundProvider>
+        <VehicleProvider>
+          <InventoryProvider>
+            <NotificationProvider>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/*" element={
+                  <ProtectedRoute>
+                    <div className="flex h-screen bg-cod-darker text-cod-text font-sans selection:bg-neon-green selection:text-cod-darker overflow-hidden">
+                      <Sidebar />
+                      <div className="flex-1 flex flex-col min-w-0">
+                        <div className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-thin scrollbar-thumb-cod-border scrollbar-track-cod-darker">
+                          <div className="max-w-7xl mx-auto w-full">
+                            <CommandPalette />
+                            <Routes>
+                              <Route path="/" element={<Landing />} />
+                              <Route path="/dashboard" element={<Dashboard />} />
+                              <Route path="/garage" element={<Garage />} />
+                              <Route path="/schedule" element={<Schedule />} />
+                              <Route path="/loadouts" element={<Loadouts />} />
+                              <Route path="/inventory" element={<Inventory />} />
+                              <Route path="/kanban" element={<Kanban />} />
+                              <Route path="/historial" element={<Historial />} />
+                              <Route path="/configuracion" element={<Configuracion />} />
+                            </Routes>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </NotificationProvider>
-        </InventoryProvider>
-      </VehicleProvider>
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </NotificationProvider>
+          </InventoryProvider>
+        </VehicleProvider>
+      </SoundProvider>
     </AuthProvider>
   );
 }
