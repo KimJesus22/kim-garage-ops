@@ -11,6 +11,7 @@ import Inventory from './pages/Inventory';
 import Kanban from './pages/Kanban';
 import Configuracion from './pages/Configuracion';
 import ThemeSelector from './components/ThemeSelector';
+import CommandPalette from './components/CommandPalette';
 
 function App() {
   const location = useLocation();
@@ -40,6 +41,7 @@ function App() {
           </main>
 
           <ThemeSelector />
+          <CommandPalette />
         </div>
       </InventoryProvider>
     </VehicleProvider>

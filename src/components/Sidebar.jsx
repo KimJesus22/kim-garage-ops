@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Car, History, Package, ClipboardList, Shield } from 'lucide-react';
+import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -11,6 +11,8 @@ const Sidebar = () => {
         { path: '/kanban', label: 'Tablero', icon: ClipboardList },
         { path: '/inventory', label: 'Inventario', icon: Package },
         { path: '/historial', label: 'Historial', icon: History },
+        { path: '/estadisticas', label: 'Estadísticas', icon: BarChart3 },
+        { path: '/configuracion', label: 'Configuración', icon: Settings },
     ];
 
     return (
