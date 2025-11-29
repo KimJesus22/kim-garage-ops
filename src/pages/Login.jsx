@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Shield, Lock, Unlock, AlertTriangle, Delete } from 'lucide-react';
+import { Shield, Lock, Unlock, AlertTriangle, Mail, ArrowRight, UserPlus, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Login = () => {
-    const [pin, setPin] = useState('');
-    const [error, setError] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const { login, isAuthenticated } = useAuth();
+    const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Register
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const { signIn, signUp, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,43 +20,26 @@ const Login = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    const handleNumberClick = (num) => {
-        if (pin.length < 4 && !isProcessing && !success) {
-            setPin(prev => prev + num);
-            setError(false);
-        }
-    };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
 
-    const handleDelete = () => {
-        if (!isProcessing && !success) {
-            setPin(prev => prev.slice(0, -1));
-            setError(false);
-        }
-    };
-
-    const handleSubmit = async () => {
-        if (pin.length !== 4) return;
-
-        setIsProcessing(true);
         try {
-            await login(pin);
-            setSuccess(true);
-            setTimeout(() => {
-                navigate('/dashboard');
-            }, 1000);
+            if (isLogin) {
+                await signIn(email, password);
+                // Navigation happens automatically via useEffect
+            } else {
+                await signUp(email, password);
+                alert('Registro exitoso! Por favor inicia sesión.');
+                setIsLogin(true); // Switch to login after signup
+            }
         } catch (err) {
-            setError(true);
-            setPin('');
-            setIsProcessing(false);
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
-
-    // Auto-submit when 4 digits are entered
-    useEffect(() => {
-        if (pin.length === 4) {
-            handleSubmit();
-        }
-    }, [pin]);
 
     return (
         <div className="min-h-screen bg-cod-darker flex items-center justify-center p-4 relative overflow-hidden">
@@ -67,118 +52,98 @@ const Login = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 className="relative z-10 w-full max-w-md"
             >
-                <div className={`
-                    bg-cod-panel border-2 rounded-lg p-8 shadow-2xl backdrop-blur-sm transition-colors duration-300
-                    ${error ? 'border-red-500 shadow-red-500/20' : success ? 'border-neon-green shadow-neon-green/20' : 'border-cod-border'}
-                `}>
-                    {/* Header / Logo */}
+                <div className="bg-cod-panel border border-cod-border rounded-lg p-8 shadow-2xl backdrop-blur-sm">
+                    {/* Header */}
                     <div className="flex flex-col items-center mb-8">
-                        <motion.div
-                            animate={{
-                                scale: [1, 1.05, 1],
-                                opacity: [0.8, 1, 0.8]
-                            }}
-                            transition={{
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                            className={`p-4 rounded-full border-2 mb-4 ${success ? 'bg-neon-green/10 border-neon-green' : 'bg-cod-dark border-cod-border'}`}
-                        >
-                            {success ? (
-                                <Unlock size={40} className="text-neon-green" />
-                            ) : (
-                                <Shield size={40} className="text-cod-text" />
-                            )}
-                        </motion.div>
+                        <div className="p-4 rounded-full border-2 border-cod-border bg-cod-dark mb-4">
+                            <Shield size={40} className="text-cod-text" />
+                        </div>
                         <h1 className="text-2xl font-display font-bold text-cod-text tracking-[0.2em]">GARAGE OPS</h1>
-                        <p className="text-xs text-cod-text-dim uppercase tracking-widest mt-1">Secure Terminal Access</p>
+                        <p className="text-xs text-cod-text-dim uppercase tracking-widest mt-1">
+                            {isLogin ? 'Secure Terminal Access' : 'New Operator Registration'}
+                        </p>
                     </div>
 
-                    {/* PIN Display */}
-                    <div className="mb-8 relative">
-                        <motion.div
-                            animate={error ? { x: [-10, 10, -10, 10, 0] } : {}}
-                            transition={{ duration: 0.4 }}
-                            className={`
-                                h-16 bg-cod-dark border rounded-sm flex items-center justify-center gap-4
-                                ${error ? 'border-red-500 text-red-500' : success ? 'border-neon-green text-neon-green' : 'border-cod-border text-cod-text'}
-                            `}
-                        >
-                            {[0, 1, 2, 3].map((i) => (
-                                <div key={i} className="w-4 h-4 rounded-full flex items-center justify-center">
-                                    {pin[i] ? (
-                                        <div className={`w-3 h-3 rounded-full ${error ? 'bg-red-500' : success ? 'bg-neon-green' : 'bg-cod-text'}`} />
-                                    ) : (
-                                        <div className="w-2 h-2 rounded-full bg-cod-text-dim/20" />
-                                    )}
-                                </div>
-                            ))}
-                        </motion.div>
-
-                        {/* Status Message */}
-                        <div className="absolute -bottom-6 left-0 right-0 text-center h-4">
-                            <AnimatePresence mode='wait'>
-                                {error && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        className="text-xs font-bold text-red-500 uppercase tracking-widest flex items-center justify-center gap-2"
-                                    >
-                                        <AlertTriangle size={12} /> Invalid Credentials
-                                    </motion.p>
-                                )}
-                                {success && (
-                                    <motion.p
-                                        initial={{ opacity: 0, y: -5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="text-xs font-bold text-neon-green uppercase tracking-widest flex items-center justify-center gap-2"
-                                    >
-                                        <Unlock size={12} /> Access Granted
-                                    </motion.p>
-                                )}
-                                {isProcessing && !success && !error && (
-                                    <motion.p
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        className="text-xs font-bold text-cod-text-dim uppercase tracking-widest animate-pulse"
-                                    >
-                                        Verifying Identity...
-                                    </motion.p>
-                                )}
-                            </AnimatePresence>
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">Email</label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-cod-text-dim" size={16} />
+                                <input
+                                    type="email"
+                                    required
+                                    className="w-full bg-cod-dark border border-cod-border rounded-sm py-2 pl-10 pr-3 text-cod-text focus:border-neon-green focus:outline-none transition-colors"
+                                    placeholder="operator@garage.ops"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Keypad */}
-                    <div className="grid grid-cols-3 gap-3">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                            <button
-                                key={num}
-                                onClick={() => handleNumberClick(num.toString())}
-                                disabled={isProcessing || success}
-                                className="h-14 bg-cod-dark border border-cod-border rounded-sm text-xl font-bold text-cod-text hover:bg-cod-panel hover:border-neon-green/50 hover:text-neon-green transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {num}
-                            </button>
-                        ))}
-                        <div className="flex items-center justify-center opacity-50">
-                            <Lock size={16} className="text-cod-text-dim" />
+                        <div>
+                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">Password</label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-cod-text-dim" size={16} />
+                                <input
+                                    type="password"
+                                    required
+                                    className="w-full bg-cod-dark border border-cod-border rounded-sm py-2 pl-10 pr-3 text-cod-text focus:border-neon-green focus:outline-none transition-colors"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
                         </div>
+
+                        <AnimatePresence>
+                            {error && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="text-red-500 text-xs font-bold flex items-center gap-2 bg-red-500/10 p-2 rounded-sm border border-red-500/20"
+                                >
+                                    <AlertTriangle size={12} />
+                                    {error}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         <button
-                            onClick={() => handleNumberClick('0')}
-                            disabled={isProcessing || success}
-                            className="h-14 bg-cod-dark border border-cod-border rounded-sm text-xl font-bold text-cod-text hover:bg-cod-panel hover:border-neon-green/50 hover:text-neon-green transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-neon-green text-cod-darker font-bold py-3 rounded-sm hover:bg-neon-green-dark transition-all uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            0
+                            {loading ? (
+                                <span className="animate-pulse">Procesando...</span>
+                            ) : (
+                                <>
+                                    {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
+                                    <ArrowRight size={16} />
+                                </>
+                            )}
                         </button>
+                    </form>
+
+                    {/* Toggle Login/Register */}
+                    <div className="mt-6 text-center">
                         <button
-                            onClick={handleDelete}
-                            disabled={isProcessing || success}
-                            className="h-14 bg-cod-dark/50 border border-cod-border rounded-sm flex items-center justify-center text-cod-text-dim hover:text-red-400 hover:border-red-500/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => {
+                                setIsLogin(!isLogin);
+                                setError(null);
+                            }}
+                            className="text-xs text-cod-text-dim hover:text-neon-green transition-colors uppercase tracking-wider flex items-center justify-center gap-2 mx-auto"
                         >
-                            <Delete size={20} />
+                            {isLogin ? (
+                                <>
+                                    <UserPlus size={14} /> Crear nueva cuenta
+                                </>
+                            ) : (
+                                <>
+                                    <LogIn size={14} /> Volver al login
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>

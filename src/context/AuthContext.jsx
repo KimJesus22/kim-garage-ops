@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { seedDatabase } from '../utils/seeder';
+import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext();
 
@@ -12,46 +12,60 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check session storage on mount
-        const session = sessionStorage.getItem('garage-auth-session');
-        if (session === 'active') {
-            setIsAuthenticated(true);
-        }
-        setIsLoading(false);
+        // Check active session on mount
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        // Listen for changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    const login = (pin) => {
-        return new Promise((resolve, reject) => {
-            // Simulate network delay for effect
-            setTimeout(() => {
-                if (pin === '2121') {
-                    sessionStorage.setItem('garage-auth-session', 'active');
-                    setIsAuthenticated(true);
-                    resolve(true);
-                } else if (pin === '7777') {
-                    // Demo Mode
-                    sessionStorage.setItem('garage-auth-session', 'active');
-                    seedDatabase(); // This will reload the page
-                    resolve(true);
-                } else {
-                    reject(new Error('Invalid PIN'));
-                }
-            }, 800); // 800ms delay for "processing" effect
+    const signIn = async (email, password) => {
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password
         });
+        if (error) throw error;
     };
 
-    const logout = () => {
-        sessionStorage.removeItem('garage-auth-session');
-        setIsAuthenticated(false);
+    const signUp = async (email, password) => {
+        const { error } = await supabase.auth.signUp({
+            email,
+            password
+        });
+        if (error) throw error;
+    };
+
+    const signOut = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
-            {children}
+        <AuthContext.Provider value={{
+            user,
+            session,
+            loading,
+            signIn,
+            signUp,
+            signOut,
+            isAuthenticated: !!user // Backward compatibility helper
+        }}>
+            {!loading && children}
         </AuthContext.Provider>
     );
 };
