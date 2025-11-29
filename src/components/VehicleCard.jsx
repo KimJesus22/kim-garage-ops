@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus, Zap, Rocket, ShieldCheck, Heart } from 'lucide-react';
+import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus, Zap, Rocket, ShieldCheck, Heart, Fuel, QrCode } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import ServiceForm from './ServiceForm';
+import FuelTracker from './FuelTracker';
+import VehicleQR from './VehicleQR';
 import { generateVehicleReport } from '../utils/pdfGenerator';
 import { calculateCostPerKm } from '../utils/calculations';
 import VehicleRankBadge from './VehicleRankBadge';
@@ -56,6 +58,8 @@ const VehicleCard = ({ vehicle }) => {
     const [isEditingMileage, setIsEditingMileage] = useState(false);
     const [newMileage, setNewMileage] = useState(vehicle.mileage);
     const [showServiceForm, setShowServiceForm] = useState(false);
+    const [showFuelTracker, setShowFuelTracker] = useState(false);
+    const [showQR, setShowQR] = useState(false);
 
     const handleSaveMileage = () => {
         if (newMileage && newMileage > 0) {
@@ -250,6 +254,20 @@ const VehicleCard = ({ vehicle }) => {
                             Servicio
                         </button>
                         <button
+                            onClick={() => setShowFuelTracker(true)}
+                            className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
+                            title="Registrar Gasolina"
+                        >
+                            <Fuel size={18} />
+                        </button>
+                        <button
+                            onClick={() => setShowQR(true)}
+                            className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
+                            title="Ver ID Táctica (QR)"
+                        >
+                            <QrCode size={18} />
+                        </button>
+                        <button
                             onClick={() => generateVehicleReport(vehicle)}
                             className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
                             title="Generar Reporte PDF"
@@ -264,6 +282,20 @@ const VehicleCard = ({ vehicle }) => {
                 <ServiceForm
                     vehicleId={vehicle.id}
                     onClose={() => setShowServiceForm(false)}
+                />
+            )}
+
+            {showFuelTracker && (
+                <FuelTracker
+                    vehicle={vehicle}
+                    onClose={() => setShowFuelTracker(false)}
+                />
+            )}
+
+            {showQR && (
+                <VehicleQR
+                    vehicle={vehicle}
+                    onClose={() => setShowQR(false)}
                 />
             )}
         </>

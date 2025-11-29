@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Calendar, DollarSign, Wrench, AlertTriangle } from 'lucide-react';
+import { X, Save, Calendar, DollarSign, Wrench, AlertTriangle, Camera, Paperclip, Loader } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
+import { compressImage } from '../utils/imageUtils';
 
 const ServiceForm = ({ vehicleId, onClose }) => {
     const { vehicles, addService } = useVehicles();
@@ -11,8 +12,11 @@ const ServiceForm = ({ vehicleId, onClose }) => {
         date: new Date().toISOString().split('T')[0],
         cost: '',
         mileageAtService: vehicle ? vehicle.mileage : '',
-        notes: ''
+        notes: '',
+        evidence: null // Base64 string
     });
+
+    const [isCompressing, setIsCompressing] = useState(false);
 
     // Set default cost based on vehicle type
     useEffect(() => {
@@ -35,6 +39,22 @@ const ServiceForm = ({ vehicleId, onClose }) => {
         'Otro'
     ];
 
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setIsCompressing(true);
+        try {
+            const compressedImage = await compressImage(file);
+            setFormData(prev => ({ ...prev, evidence: compressedImage }));
+        } catch (error) {
+            console.error("Error compressing image:", error);
+            alert("Error al procesar la imagen. Intenta de nuevo.");
+        } finally {
+            setIsCompressing(false);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         addService(vehicleId, {
@@ -49,9 +69,9 @@ const ServiceForm = ({ vehicleId, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-cod-panel border border-cod-border w-full max-w-md rounded-sm shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="bg-cod-panel border border-cod-border w-full max-w-md rounded-sm shadow-2xl animate-in fade-in zoom-in duration-200 max-h-[90vh] overflow-y-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-cod-border bg-cod-darker/50">
+                <div className="flex items-center justify-between p-4 border-b border-cod-border bg-cod-darker/50 sticky top-0 z-10 backdrop-blur-md">
                     <h2 className="text-xl font-display font-bold text-cod-text flex items-center gap-2">
                         <Wrench className="text-neon-green" size={20} />
                         Registrar Servicio
@@ -135,6 +155,68 @@ const ServiceForm = ({ vehicleId, onClose }) => {
                         )}
                     </div>
 
+                    {/* Evidencia Fotográfica */}
+                    <div>
+                        <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
+                            Evidencia (Ticket/Pieza)
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <label className={`
+                                flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-sm border border-dashed cursor-pointer transition-colors
+                                ${formData.evidence
+                                    ? 'border-neon-green bg-neon-green/10 text-neon-green'
+                                    : 'border-cod-border hover:border-cod-text-dim text-cod-text-dim hover:text-cod-text'
+                                }
+                            `}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    capture="environment"
+                                    onChange={handleImageUpload}
+                                    className="hidden"
+                                />
+                                {isCompressing ? (
+                                    <>
+                                        <Loader className="animate-spin" size={18} />
+                                        <span className="text-xs font-bold">PROCESANDO...</span>
+                                    </>
+                                ) : formData.evidence ? (
+                                    <>
+                                        <Check size={18} />
+                                        <span className="text-xs font-bold">EVIDENCIA CARGADA</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Camera size={18} />
+                                        <span className="text-xs font-bold">ADJUNTAR INTELIGENCIA</span>
+                                    </>
+                                )}
+                            </label>
+                            {formData.evidence && (
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, evidence: null }))}
+                                    className="p-2 text-cod-orange hover:bg-cod-orange/10 rounded-sm"
+                                    title="Eliminar evidencia"
+                                >
+                                    <X size={18} />
+                                </button>
+                            )}
+                        </div>
+                        {formData.evidence && (
+                            <div className="mt-2 h-24 w-full rounded-sm overflow-hidden border border-cod-border relative group">
+                                <img
+                                    src={formData.evidence}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Paperclip className="text-white" />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Notas */}
                     <div>
                         <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
@@ -160,6 +242,7 @@ const ServiceForm = ({ vehicleId, onClose }) => {
                         <button
                             type="submit"
                             className="flex-1 btn-primary flex items-center justify-center gap-2"
+                            disabled={isCompressing}
                         >
                             <Save size={18} />
                             Guardar Registro

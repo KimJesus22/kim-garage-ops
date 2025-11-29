@@ -1,46 +1,27 @@
-import { useState } from 'react';
 import { VehicleProvider } from './context/VehicleContext';
-import Sidebar from './components/Sidebar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Garage from './pages/Garage';
 import Historial from './pages/Historial';
-import Estadisticas from './pages/Estadisticas';
-
-import Configuracion from './pages/Configuracion';
+import Navbar from './components/Navbar';
+import ThemeSelector from './components/ThemeSelector';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <Dashboard onNavigate={setCurrentPage} />;
-      case 'garage':
-        return <Garage />;
-      case 'historial':
-        return <Historial />;
-      case 'estadisticas':
-        return <Estadisticas />;
-      case 'configuracion':
-        return <Configuracion />;
-      default:
-        return <Dashboard onNavigate={setCurrentPage} />;
-    }
-  };
-
   return (
     <VehicleProvider>
-      <div className="flex min-h-screen bg-cod-darker">
-        {/* Sidebar */}
-        <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
-
-        {/* Main Content */}
-        <main className="flex-1 ml-64 p-8 scrollbar-cod overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
-            {renderPage()}
-          </div>
-        </main>
-      </div>
+      <Router>
+        <div className="min-h-screen bg-cod-darker text-cod-text pb-20 md:pb-0">
+          <Navbar />
+          <main className="container mx-auto px-4 py-6">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/garage" element={<Garage />} />
+              <Route path="/historial" element={<Historial />} />
+            </Routes>
+          </main>
+          <ThemeSelector />
+        </div>
+      </Router>
     </VehicleProvider>
   );
 }

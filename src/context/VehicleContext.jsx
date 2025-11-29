@@ -62,7 +62,8 @@ export const VehicleProvider = ({ children }) => {
         const newVehicle = {
             ...vehicle,
             id: Date.now().toString(),
-            services: []
+            services: [],
+            fuelLogs: []
         };
         setVehicles(prev => [...prev, newVehicle]);
     };
@@ -91,6 +92,18 @@ export const VehicleProvider = ({ children }) => {
         }));
     };
 
+    const addFuelLog = (vehicleId, log) => {
+        setVehicles(prev => prev.map(v => {
+            if (v.id === vehicleId) {
+                return {
+                    ...v,
+                    fuelLogs: [...(v.fuelLogs || []), { ...log, id: Date.now().toString() }]
+                };
+            }
+            return v;
+        }));
+    };
+
     const restoreData = (data) => {
         if (!Array.isArray(data)) {
             throw new Error('Formato de datos inválido: Se esperaba un arreglo.');
@@ -108,6 +121,7 @@ export const VehicleProvider = ({ children }) => {
         updateVehicle,
         deleteVehicle,
         addService,
+        addFuelLog,
         restoreData
     };
 

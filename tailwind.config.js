@@ -13,10 +13,10 @@ export default {
                 'cod-panel': '#151a21', // Requested specific hex
                 'cod-panel-light': '#1e252f', // Generated variant
 
-                // Neon Green Accents
-                'neon-green': '#4ade80', // Requested specific hex
-                'neon-green-dark': '#22c55e', // Generated variant
-                'neon-green-glow': 'rgba(74, 222, 128, 0.3)',
+                // Neon Green Accents (Now Dynamic)
+                'neon-green': 'rgb(var(--color-primary) / <alpha-value>)',
+                'neon-green-dark': 'rgb(var(--color-primary-dark) / <alpha-value>)',
+                'neon-green-glow': 'rgba(var(--color-primary), 0.3)',
 
                 // Orange Accents
                 'cod-orange': '#ff6b35', // Requested specific hex
@@ -36,7 +36,7 @@ export default {
                 'display': ['Rajdhani', 'Inter', 'sans-serif'],
             },
             boxShadow: {
-                'neon-green': '0 0 10px rgba(74, 222, 128, 0.3), 0 0 20px rgba(74, 222, 128, 0.1)',
+                'neon-green': '0 0 10px rgba(var(--color-primary), 0.3), 0 0 20px rgba(var(--color-primary), 0.1)',
                 'neon-orange': '0 0 10px rgba(255, 107, 53, 0.3), 0 0 20px rgba(255, 107, 53, 0.1)',
                 'cod-card': '0 4px 6px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1)',
             },
@@ -45,8 +45,8 @@ export default {
             },
             keyframes: {
                 'glow-pulse': {
-                    '0%, 100%': { boxShadow: '0 0 5px rgba(74, 222, 128, 0.2)' },
-                    '50%': { boxShadow: '0 0 20px rgba(74, 222, 128, 0.4)' },
+                    '0%, 100%': { boxShadow: '0 0 5px rgba(var(--color-primary), 0.2)' },
+                    '50%': { boxShadow: '0 0 20px rgba(var(--color-primary), 0.4)' },
                 },
             },
         },
