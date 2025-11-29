@@ -35,7 +35,11 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 - **Motion UI**: Transiciones de página fluidas y contadores animados para un "Game Feel" inmersivo.
 - **Temas Dinámicos**: Personalización en tiempo real con temas Tactical (Verde), Blink (Rosa) y Army (Morado).
 
-### 🚀 Nuevas Funcionalidades (v2.0)
+### 🚀 Nuevas Funcionalidades (v2.1)
+- **Notification Hub**: Centro de alertas centralizado para stock bajo, servicios próximos y agenda del día.
+- **Trip Simulator Táctico**: Mapa interactivo (Leaflet + CartoDB) para cálculo de distancias y estimación de costos de viaje.
+- **Data Export**: Herramienta administrativa para descargar el historial completo de servicios en CSV compatible con Excel.
+- **Feedback Sonoro (Web Audio API)**: Sistema de sonido inmersivo sin archivos externos (Click, Hover, Success, Error) con control de silencio.
 - **Landing Page de Alto Impacto**: Entrada inmersiva con animaciones en cascada.
 - **Sistema de Temas**: Selector flotante para cambiar la estética de la app al instante.
 - **Etiquetado QR**: Generación de tarjetas de identificación con código QR para cada vehículo.
