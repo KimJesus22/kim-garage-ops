@@ -1,6 +1,7 @@
 import { useVehicles } from '../context/VehicleContext';
 import { formatCurrency } from '../utils/formatters';
-import { Calendar, Wrench, DollarSign, FileText } from 'lucide-react';
+import { exportToCSV } from '../utils/exporter';
+import { Calendar, Wrench, DollarSign, FileText, Download } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 
 const Historial = () => {
@@ -15,12 +16,36 @@ const Historial = () => {
         }))
     ).sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
 
+    const handleExport = () => {
+        const exportData = allServices.map(s => ({
+            Fecha: new Date(s.date).toLocaleDateString(),
+            Vehiculo: s.vehicleName,
+            Tipo: s.vehicleType,
+            Servicio: s.type,
+            Costo: s.cost,
+            Notas: s.notes || '',
+            Refacciones: s.parts ? s.parts.map(p => `${p.name} (${p.quantity})`).join(' | ') : ''
+        }));
+
+        const dateStr = new Date().toISOString().split('T')[0];
+        exportToCSV(exportData, `Reporte_Global_${dateStr}.csv`);
+    };
+
     return (
         <PageTransition>
             <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-display font-bold text-cod-text mb-2">BITÁCORA DE SERVICIO</h1>
-                    <p className="text-cod-text-dim">Registro histórico de mantenimiento.</p>
+                <div className="flex justify-between items-end">
+                    <div>
+                        <h1 className="text-3xl font-display font-bold text-cod-text mb-2">BITÁCORA DE SERVICIO</h1>
+                        <p className="text-cod-text-dim">Registro histórico de mantenimiento.</p>
+                    </div>
+                    <button
+                        onClick={handleExport}
+                        className="flex items-center gap-2 px-4 py-2 bg-cod-panel border border-cod-border rounded-sm text-cod-text hover:bg-cod-dark hover:text-neon-green transition-colors text-sm font-medium"
+                    >
+                        <Download size={16} />
+                        Exportar Datos
+                    </button>
                 </div>
 
                 <div className="card-cod overflow-hidden">

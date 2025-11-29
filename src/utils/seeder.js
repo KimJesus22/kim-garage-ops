@@ -20,11 +20,14 @@ export const seedDatabase = () => {
     const vehicles = [
         {
             id: timestamp - 1000,
+            brand: 'Vento',
+            model: 'Lithium 150',
             name: 'Vento Lithium 150',
-            type: 'Motorcycle',
+            year: 2023,
+            type: 'moto',
             plate: 'VNT-2023',
             mileage: 12500,
-            image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1000&auto=format&fit=crop', // Generic moto
+            photo: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1000&auto=format&fit=crop', // Generic moto
             status: 'active',
             services: [
                 { id: timestamp - (day * 60), type: 'Mantenimiento General', date: '2023-09-15', cost: 1200, status: 'completed', notes: 'Servicio de los 1000km' },
@@ -37,11 +40,14 @@ export const seedDatabase = () => {
         },
         {
             id: timestamp - 2000,
+            brand: 'Nissan',
+            model: 'Tsuru',
             name: 'Nissan Tsuru "El Inmortal"',
-            type: 'Car',
+            year: 2010,
+            type: 'auto',
             plate: 'LEGEND-01',
             mileage: 400000,
-            image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1000&auto=format&fit=crop', // Generic white car
+            photo: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1000&auto=format&fit=crop', // Generic white car
             status: 'active',
             services: [
                 { id: timestamp - (day * 120), type: 'Suspensión', date: '2023-07-20', cost: 3500, status: 'completed', notes: 'Cambio de amortiguadores' },
@@ -53,11 +59,14 @@ export const seedDatabase = () => {
         },
         {
             id: timestamp - 3000,
+            brand: 'Tesla',
+            model: 'Cybertruck',
             name: 'Tesla Cybertruck',
-            type: 'Truck',
+            year: 2024,
+            type: 'auto',
             plate: 'MARS-X',
             mileage: 500,
-            image: 'https://images.unsplash.com/photo-1605218427368-35b861286977?q=80&w=1000&auto=format&fit=crop', // Futuristic car
+            photo: 'https://images.unsplash.com/photo-1605218427368-35b861286977?q=80&w=1000&auto=format&fit=crop', // Futuristic car
             status: 'active',
             services: [
                 { id: timestamp - (day * 2), type: 'Otro', date: '2023-11-27', cost: 0, status: 'pending', notes: 'Actualización de Software v12.0' }

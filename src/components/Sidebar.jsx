@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair } from 'lucide-react';
+import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair, Calendar } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -8,6 +8,7 @@ const Sidebar = () => {
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: Home },
         { path: '/garage', label: 'Garage', icon: Car },
+        { path: '/schedule', label: 'Calendario', icon: Calendar },
         { path: '/loadouts', label: 'Loadouts', icon: Crosshair },
         { path: '/kanban', label: 'Tablero', icon: ClipboardList },
         { path: '/inventory', label: 'Inventario', icon: Package },

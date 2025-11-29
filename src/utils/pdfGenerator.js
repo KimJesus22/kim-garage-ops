@@ -38,7 +38,7 @@ export const generateVehicleReport = (vehicle) => {
             new Date(service.date).toLocaleDateString('es-MX'),
             service.type,
             service.description || '-',
-            `${service.mileageAtService.toLocaleString()} km`,
+            service.mileageAtService ? `${service.mileageAtService.toLocaleString()} km` : '-',
             formatCurrency(service.cost)
         ]);
 

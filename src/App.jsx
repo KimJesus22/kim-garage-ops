@@ -13,6 +13,7 @@ import Historial from './pages/Historial';
 import Estadisticas from './pages/Estadisticas';
 import Inventory from './pages/Inventory';
 import Loadouts from './pages/Loadouts';
+import Schedule from './pages/Schedule';
 import Kanban from './pages/Kanban';
 import Configuracion from './pages/Configuracion';
 import ThemeSelector from './components/ThemeSelector';
@@ -69,6 +70,7 @@ function App() {
                         <Route path="/" element={<Landing />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/garage" element={<Garage />} />
+                        <Route path="/schedule" element={<Schedule />} />
                         <Route path="/loadouts" element={<Loadouts />} />
                         <Route path="/inventory" element={<Inventory />} />
                         <Route path="/kanban" element={<Kanban />} />

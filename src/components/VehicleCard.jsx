@@ -10,9 +10,11 @@ import VehicleRankBadge from './VehicleRankBadge';
 import { formatCurrency } from '../utils/formatters';
 
 const getSpecialBadge = (vehicle) => {
+    if (!vehicle || !vehicle.brand || !vehicle.model) return null;
+
     const brand = vehicle.brand.toLowerCase();
     const model = vehicle.model.toLowerCase();
-    const mileage = parseInt(vehicle.mileage);
+    const mileage = parseInt(vehicle.mileage) || 0;
 
     // Caso 'El Inmortal': Nissan Tsuru > 300,000 km
     if (brand.includes('nissan') && model.includes('tsuru') && mileage > 300000) {

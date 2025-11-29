@@ -14,7 +14,8 @@ import {
     Sun,
     Zap,
     Shield,
-    Briefcase
+    Briefcase,
+    Calendar
 } from 'lucide-react';
 
 const CommandPalette = () => {
@@ -98,6 +99,13 @@ const CommandPalette = () => {
                         >
                             <Car size={18} />
                             <span className="font-medium">Garage</span>
+                        </Command.Item>
+                        <Command.Item
+                            onSelect={() => runCommand(() => navigate('/schedule'))}
+                            className="flex items-center gap-3 px-3 py-3 rounded-sm text-cod-text hover:bg-cod-panel hover:text-neon-green cursor-pointer transition-colors aria-selected:bg-cod-panel aria-selected:text-neon-green"
+                        >
+                            <Calendar size={18} />
+                            <span className="font-medium">Calendario de Operaciones</span>
                         </Command.Item>
                         <Command.Item
                             onSelect={() => runCommand(() => navigate('/kanban'))}
