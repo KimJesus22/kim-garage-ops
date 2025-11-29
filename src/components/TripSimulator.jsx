@@ -243,9 +243,8 @@ const TripSimulator = () => {
                         style={{ height: '100%', width: '100%' }}
                     >
                         <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            className="map-tiles-dark"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                         />
                         {/* Center Marker (Base) */}
                         <Marker position={CDMX_COORDS}>
@@ -256,16 +255,6 @@ const TripSimulator = () => {
 
                     {/* Map Overlay Styles */}
                     <div className="absolute inset-0 pointer-events-none border-[1px] border-neon-green/20 rounded-lg z-[1000] shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"></div>
-
-                    {/* CSS Filter for Dark Mode Map */}
-                    <style>{`
-                        .map-tiles-dark {
-                            filter: grayscale(100%) invert(100%) contrast(85%);
-                        }
-                        .leaflet-container {
-                            background: #000 !important;
-                        }
-                    `}</style>
                 </div>
             </div>
         </div>

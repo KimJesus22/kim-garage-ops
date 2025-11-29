@@ -1,9 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair, Calendar } from 'lucide-react';
+import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings, Crosshair, Calendar, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 const Sidebar = () => {
     const location = useLocation();
     const currentPath = location.pathname;
+    const { logout } = useAuth();
 
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -57,11 +60,26 @@ const Sidebar = () => {
             </nav>
 
             {/* Footer */}
-            <div className="p-6 border-t border-cod-border">
-                <div className="flex items-center gap-2 text-cod-text-dim/50">
-                    <div className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
-                    <span className="text-xs uppercase tracking-widest">System Online</span>
+            <div className="p-4 border-t border-cod-border">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-cod-panel flex items-center justify-center text-neon-green font-bold border border-cod-border">
+                            OP
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-cod-text">Operador</p>
+                            <p className="text-xs text-cod-text-dim">Nivel 1</p>
+                        </div>
+                    </div>
+                    <NotificationBell />
                 </div>
+                <button
+                    onClick={logout}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-sm text-cod-text-dim hover:bg-cod-panel hover:text-cod-orange transition-colors"
+                >
+                    <LogOut size={18} />
+                    <span className="font-medium">Cerrar Sesión</span>
+                </button>
             </div>
         </aside>
     );
