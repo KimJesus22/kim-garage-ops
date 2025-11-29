@@ -17,18 +17,7 @@ const Historial = () => {
     ).sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
 
     const handleExport = () => {
-        const exportData = allServices.map(s => ({
-            Fecha: new Date(s.date).toLocaleDateString(),
-            Vehiculo: s.vehicleName,
-            Tipo: s.vehicleType,
-            Servicio: s.type,
-            Costo: s.cost,
-            Notas: s.notes || '',
-            Refacciones: s.parts ? s.parts.map(p => `${p.name} (${p.quantity})`).join(' | ') : ''
-        }));
-
-        const dateStr = new Date().toISOString().split('T')[0];
-        exportToCSV(exportData, `Reporte_Global_${dateStr}.csv`);
+        exportToCSV(vehicles);
     };
 
     return (

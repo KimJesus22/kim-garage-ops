@@ -19,7 +19,7 @@ export const seedDatabase = () => {
     // 2. Vehicles Data
     const vehicles = [
         {
-            id: timestamp - 1000,
+            id: 'demo-vehicle-1',
             brand: 'Vento',
             model: 'Lithium 150',
             name: 'Vento Lithium 150',
@@ -30,16 +30,16 @@ export const seedDatabase = () => {
             photo: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1000&auto=format&fit=crop', // Generic moto
             status: 'active',
             services: [
-                { id: timestamp - (day * 60), type: 'Mantenimiento General', date: '2023-09-15', cost: 1200, status: 'completed', notes: 'Servicio de los 1000km' },
-                { id: timestamp - (day * 30), type: 'Cambio de Aceite', date: '2023-10-15', cost: 450, status: 'completed', notes: 'Aceite Motul' },
-                { id: timestamp - (day * 15), type: 'Frenos', date: '2023-11-01', cost: 600, status: 'completed', notes: 'Ajuste de balatas traseras' },
-                { id: timestamp - (day * 5), type: 'Eléctrico', date: '2023-11-20', cost: 300, status: 'completed', notes: 'Cambio de foco principal' },
-                { id: timestamp - (day * 1), type: 'Mantenimiento General', date: '2023-11-28', cost: 1500, status: 'in_progress', notes: 'Servicio mayor en proceso' }
+                { id: 'demo-service-1-1', type: 'Mantenimiento General', date: '2023-09-15', cost: 1200, status: 'completed', notes: 'Servicio de los 1000km' },
+                { id: 'demo-service-1-2', type: 'Cambio de Aceite', date: '2023-10-15', cost: 450, status: 'completed', notes: 'Aceite Motul' },
+                { id: 'demo-service-1-3', type: 'Frenos', date: '2023-11-01', cost: 600, status: 'completed', notes: 'Ajuste de balatas traseras' },
+                { id: 'demo-service-1-4', type: 'Eléctrico', date: '2023-11-20', cost: 300, status: 'completed', notes: 'Cambio de foco principal' },
+                { id: 'demo-service-1-5', type: 'Mantenimiento General', date: '2023-11-28', cost: 1500, status: 'in_progress', notes: 'Servicio mayor en proceso' }
             ],
             fuelLogs: []
         },
         {
-            id: timestamp - 2000,
+            id: 'demo-vehicle-2',
             brand: 'Nissan',
             model: 'Tsuru',
             name: 'Nissan Tsuru "El Inmortal"',
@@ -50,15 +50,15 @@ export const seedDatabase = () => {
             photo: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1000&auto=format&fit=crop', // Generic white car
             status: 'active',
             services: [
-                { id: timestamp - (day * 120), type: 'Suspensión', date: '2023-07-20', cost: 3500, status: 'completed', notes: 'Cambio de amortiguadores' },
-                { id: timestamp - (day * 90), type: 'Mantenimiento General', date: '2023-08-20', cost: 1800, status: 'completed', notes: 'Afinación completa' },
-                { id: timestamp - (day * 60), type: 'Neumáticos', date: '2023-09-20', cost: 4200, status: 'completed', notes: '4 Llantas nuevas' },
-                { id: timestamp - (day * 10), type: 'Frenos', date: '2023-11-15', cost: 1200, status: 'completed', notes: 'Rectificado de discos' }
+                { id: 'demo-service-2-1', type: 'Suspensión', date: '2023-07-20', cost: 3500, status: 'completed', notes: 'Cambio de amortiguadores' },
+                { id: 'demo-service-2-2', type: 'Mantenimiento General', date: '2023-08-20', cost: 1800, status: 'completed', notes: 'Afinación completa' },
+                { id: 'demo-service-2-3', type: 'Neumáticos', date: '2023-09-20', cost: 4200, status: 'completed', notes: '4 Llantas nuevas' },
+                { id: 'demo-service-2-4', type: 'Frenos', date: '2023-11-15', cost: 1200, status: 'completed', notes: 'Rectificado de discos' }
             ],
             fuelLogs: []
         },
         {
-            id: timestamp - 3000,
+            id: 'demo-vehicle-3',
             brand: 'Tesla',
             model: 'Cybertruck',
             name: 'Tesla Cybertruck',
@@ -69,7 +69,7 @@ export const seedDatabase = () => {
             photo: 'https://images.unsplash.com/photo-1605218427368-35b861286977?q=80&w=1000&auto=format&fit=crop', // Futuristic car
             status: 'active',
             services: [
-                { id: timestamp - (day * 2), type: 'Otro', date: '2023-11-27', cost: 0, status: 'pending', notes: 'Actualización de Software v12.0' }
+                { id: 'demo-service-3-1', type: 'Otro', date: '2023-11-27', cost: 0, status: 'pending', notes: 'Actualización de Software v12.0' }
             ],
             fuelLogs: []
         }
