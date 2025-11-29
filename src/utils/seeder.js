@@ -1,0 +1,85 @@
+export const seedDatabase = () => {
+    const timestamp = Date.now();
+    const day = 86400000;
+
+    // 1. Inventory Data
+    const inventory = [
+        { id: 1, name: 'Aceite Sintético 10W-40', stock: 15, price: 180, unit: 'L' },
+        { id: 2, name: 'Filtro de Aceite Universal', stock: 8, price: 120, unit: 'pz' },
+        { id: 3, name: 'Bujía Iridium', stock: 24, price: 250, unit: 'pz' },
+        { id: 4, name: 'Balatas Cerámicas Delanteras', stock: 5, price: 850, unit: 'set' },
+        { id: 5, name: 'Líquido de Frenos DOT4', stock: 10, price: 150, unit: 'L' },
+        { id: 6, name: 'Anticongelante Concentrado', stock: 12, price: 200, unit: 'L' },
+        { id: 7, name: 'Kit Cadena Distribución', stock: 3, price: 1200, unit: 'set' },
+        { id: 8, name: 'Batería 12V Alto Rendimiento', stock: 4, price: 2800, unit: 'pz' },
+        { id: 9, name: 'Limpiador de Inyectores', stock: 20, price: 90, unit: 'bote' },
+        { id: 10, name: 'Filtro de Aire Deportivo', stock: 6, price: 450, unit: 'pz' }
+    ];
+
+    // 2. Vehicles Data
+    const vehicles = [
+        {
+            id: timestamp - 1000,
+            name: 'Vento Lithium 150',
+            type: 'Motorcycle',
+            plate: 'VNT-2023',
+            mileage: 12500,
+            image: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=1000&auto=format&fit=crop', // Generic moto
+            status: 'active',
+            services: [
+                { id: timestamp - (day * 60), type: 'Mantenimiento General', date: '2023-09-15', cost: 1200, status: 'completed', notes: 'Servicio de los 1000km' },
+                { id: timestamp - (day * 30), type: 'Cambio de Aceite', date: '2023-10-15', cost: 450, status: 'completed', notes: 'Aceite Motul' },
+                { id: timestamp - (day * 15), type: 'Frenos', date: '2023-11-01', cost: 600, status: 'completed', notes: 'Ajuste de balatas traseras' },
+                { id: timestamp - (day * 5), type: 'Eléctrico', date: '2023-11-20', cost: 300, status: 'completed', notes: 'Cambio de foco principal' },
+                { id: timestamp - (day * 1), type: 'Mantenimiento General', date: '2023-11-28', cost: 1500, status: 'in_progress', notes: 'Servicio mayor en proceso' }
+            ],
+            fuelLogs: []
+        },
+        {
+            id: timestamp - 2000,
+            name: 'Nissan Tsuru "El Inmortal"',
+            type: 'Car',
+            plate: 'LEGEND-01',
+            mileage: 400000,
+            image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=1000&auto=format&fit=crop', // Generic white car
+            status: 'active',
+            services: [
+                { id: timestamp - (day * 120), type: 'Suspensión', date: '2023-07-20', cost: 3500, status: 'completed', notes: 'Cambio de amortiguadores' },
+                { id: timestamp - (day * 90), type: 'Mantenimiento General', date: '2023-08-20', cost: 1800, status: 'completed', notes: 'Afinación completa' },
+                { id: timestamp - (day * 60), type: 'Neumáticos', date: '2023-09-20', cost: 4200, status: 'completed', notes: '4 Llantas nuevas' },
+                { id: timestamp - (day * 10), type: 'Frenos', date: '2023-11-15', cost: 1200, status: 'completed', notes: 'Rectificado de discos' }
+            ],
+            fuelLogs: []
+        },
+        {
+            id: timestamp - 3000,
+            name: 'Tesla Cybertruck',
+            type: 'Truck',
+            plate: 'MARS-X',
+            mileage: 500,
+            image: 'https://images.unsplash.com/photo-1605218427368-35b861286977?q=80&w=1000&auto=format&fit=crop', // Futuristic car
+            status: 'active',
+            services: [
+                { id: timestamp - (day * 2), type: 'Otro', date: '2023-11-27', cost: 0, status: 'pending', notes: 'Actualización de Software v12.0' }
+            ],
+            fuelLogs: []
+        }
+    ];
+
+    // 3. Templates Data
+    const templates = [
+        { id: 1, name: 'Afinación Tsuru', laborCost: 800, items: [{ id: 1, name: 'Aceite', quantity: 4, unit: 'L' }, { id: 2, name: 'Filtro', quantity: 1, unit: 'pz' }] },
+        { id: 2, name: 'Servicio Moto 150cc', laborCost: 400, items: [{ id: 1, name: 'Aceite', quantity: 1, unit: 'L' }, { id: 3, name: 'Bujía', quantity: 1, unit: 'pz' }] }
+    ];
+
+    // Save to LocalStorage
+    localStorage.setItem('garage-inventory', JSON.stringify(inventory));
+    localStorage.setItem('vehicles', JSON.stringify(vehicles));
+    localStorage.setItem('garage-templates', JSON.stringify(templates));
+
+    // Set Demo Flag
+    sessionStorage.setItem('demo-mode', 'true');
+
+    // Force Reload
+    window.location.reload();
+};

@@ -13,7 +13,8 @@ import {
     Moon,
     Sun,
     Zap,
-    Shield
+    Shield,
+    Briefcase
 } from 'lucide-react';
 
 const CommandPalette = () => {
@@ -158,6 +159,25 @@ const CommandPalette = () => {
                         >
                             <Moon size={18} />
                             <span className="font-medium">Army (Spec Ops)</span>
+                        </Command.Item>
+                    </Command.Group>
+
+                    <Command.Separator className="h-px bg-cod-border my-2" />
+
+                    <Command.Group heading="INFORMACIÓN CLASIFICADA" className="text-[10px] font-bold text-cod-text-dim uppercase tracking-wider mb-2 px-2">
+                        <Command.Item
+                            onSelect={() => runCommand(() => window.open('https://github.com/KimJesus22', '_blank'))}
+                            className="flex items-center gap-3 px-3 py-3 rounded-sm text-cod-text hover:bg-neon-green hover:text-cod-darker cursor-pointer transition-colors aria-selected:bg-neon-green aria-selected:text-cod-darker"
+                        >
+                            <Zap size={18} />
+                            <span className="font-medium">Creado por KimJesus22</span>
+                        </Command.Item>
+                        <Command.Item
+                            onSelect={() => runCommand(() => window.open('https://www.linkedin.com/', '_blank'))}
+                            className="flex items-center gap-3 px-3 py-3 rounded-sm text-cod-text hover:bg-blue-500 hover:text-white cursor-pointer transition-colors aria-selected:bg-blue-500 aria-selected:text-white"
+                        >
+                            <Briefcase size={18} />
+                            <span className="font-medium">Contactar Ingeniero (LinkedIn)</span>
                         </Command.Item>
                     </Command.Group>
                 </Command.List>

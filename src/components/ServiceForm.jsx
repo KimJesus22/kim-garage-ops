@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Wrench, Plus, Trash2, Package, AlertTriangle } from 'lucide-react';
+import { X, Save, Wrench, Plus, Trash2, Package, AlertTriangle, Zap } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import { useInventory } from '../context/InventoryContext';
 import { formatCurrency } from '../utils/formatters';
 
 const ServiceForm = ({ onClose, vehicleId }) => {
     const { addService } = useVehicles();
-    const { inventory, updateStock } = useInventory();
+    const { inventory, updateStock, serviceTemplates } = useInventory();
 
     const [formData, setFormData] = useState({
         type: 'Mantenimiento General',
@@ -64,6 +64,36 @@ const ServiceForm = ({ onClose, vehicleId }) => {
         setSelectedParts(updatedParts);
     };
 
+    const applyTemplate = (template) => {
+        if (confirm(`¿Aplicar Loadout "${template.name}"? Esto sobrescribirá las refacciones actuales.`)) {
+            setFormData(prev => ({
+                ...prev,
+                laborCost: template.laborCost
+            }));
+
+            // Map template items to match selectedParts structure
+            // Note: We don't check stock here strictly, but we could add a warning if needed
+            const templateParts = template.items.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: 0, // We might need to fetch current price from inventory if not stored in template, or assume 0/template price
+                quantity: item.quantity,
+                unit: item.unit
+            }));
+
+            // Re-fetch prices from current inventory to ensure accuracy
+            const hydratedParts = templateParts.map(tPart => {
+                const invPart = inventory.find(p => p.id === tPart.id);
+                return {
+                    ...tPart,
+                    price: invPart ? invPart.price : 0
+                };
+            });
+
+            setSelectedParts(hydratedParts);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -109,6 +139,31 @@ const ServiceForm = ({ onClose, vehicleId }) => {
                 </div>
 
                 <div className="overflow-y-auto p-6 space-y-6 scrollbar-cod">
+
+                    {/* Quick Deploy (Loadouts) */}
+                    {serviceTemplates.length > 0 && (
+                        <div className="bg-cod-dark/30 border border-cod-border/50 rounded-sm p-3 mb-4">
+                            <h3 className="text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-2 flex items-center gap-2">
+                                <Zap size={12} className="text-neon-green" />
+                                Despliegue Rápido (Loadouts)
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
+                                {serviceTemplates.map(template => (
+                                    <button
+                                        key={template.id}
+                                        onClick={() => applyTemplate(template)}
+                                        className="bg-cod-panel hover:bg-cod-panel/80 border border-cod-border hover:border-neon-green text-cod-text text-xs py-1 px-3 rounded-sm transition-all flex items-center gap-2 group"
+                                    >
+                                        <span>{template.name}</span>
+                                        <span className="text-cod-text-dim group-hover:text-neon-green transition-colors text-[10px]">
+                                            ({template.items?.length || 0} items)
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <form id="service-form" onSubmit={handleSubmit} className="space-y-6">
                         {/* Basic Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

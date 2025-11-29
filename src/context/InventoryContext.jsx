@@ -38,8 +38,34 @@ export const InventoryProvider = ({ children }) => {
         setInventory(prev => prev.filter(item => item.id !== id));
     };
 
+    // --- Service Templates (Loadouts) System ---
+    const [serviceTemplates, setServiceTemplates] = useState(() => {
+        const saved = localStorage.getItem('garage-templates');
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('garage-templates', JSON.stringify(serviceTemplates));
+    }, [serviceTemplates]);
+
+    const addTemplate = (template) => {
+        setServiceTemplates(prev => [...prev, { ...template, id: Date.now() }]);
+    };
+
+    const deleteTemplate = (id) => {
+        setServiceTemplates(prev => prev.filter(t => t.id !== id));
+    };
+
     return (
-        <InventoryContext.Provider value={{ inventory, addPart, updateStock, deletePart }}>
+        <InventoryContext.Provider value={{
+            inventory,
+            addPart,
+            updateStock,
+            deletePart,
+            serviceTemplates,
+            addTemplate,
+            deleteTemplate
+        }}>
             {children}
         </InventoryContext.Provider>
     );
