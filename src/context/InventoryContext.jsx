@@ -34,19 +34,32 @@ export const InventoryProvider = ({ children }) => {
         }
     };
 
-    // Initial Load
+    // Initial Load & Auth Listener
     useEffect(() => {
         fetchInventory();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) {
+                fetchInventory();
+            } else {
+                setInventory([]);
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const addPart = async (part) => {
         try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('No authenticated user');
+
             // Supabase generates the ID, so we don't need to pass it if the DB is set up that way.
             // However, the user instruction said "Supabase genera el id", so we exclude it if present or let Supabase handle it.
-            // We'll pass the part object directly.
+            // We'll pass the part object directly but inject user_id.
             const { data, error } = await supabase
                 .from('inventory')
-                .insert([part])
+                .insert([{ ...part, user_id: user.id }])
                 .select();
 
             if (error) throw error;

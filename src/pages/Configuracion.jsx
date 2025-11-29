@@ -128,6 +128,41 @@ const Configuracion = () => {
                         />
                     </label>
                 </div>
+
+                {/* Demo Data Section */}
+                <div className="card-cod group hover:border-blue-500/30">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-3 bg-cod-panel rounded-sm text-blue-500">
+                            <Settings size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-display font-bold text-cod-text">Datos Demo</h3>
+                            <p className="text-xs text-cod-text-dim uppercase tracking-wide">Poblar Base de Datos</p>
+                        </div>
+                    </div>
+
+                    <p className="text-cod-text-dim text-sm mb-6">
+                        Carga datos de prueba (Vento, Tsuru, Cybertruck) en tu cuenta de Supabase.
+                        <span className="text-blue-500 block mt-1 font-bold">
+                            Ideal para pruebas iniciales.
+                        </span>
+                    </p>
+
+                    <button
+                        onClick={() => {
+                            if (window.seedDatabase) {
+                                window.seedDatabase();
+                                setMessage({ type: 'success', text: 'Iniciando carga de datos...' });
+                            } else {
+                                setMessage({ type: 'error', text: 'Función seedDatabase no disponible.' });
+                            }
+                        }}
+                        className="w-full btn-secondary border-blue-500/50 text-blue-500 hover:bg-blue-500/10 flex items-center justify-center gap-2"
+                    >
+                        <Settings size={18} />
+                        Cargar Datos Demo
+                    </button>
+                </div>
             </div>
 
             {/* System Info */}

@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { X, Save, Car, Bike } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
+import { useStorage } from '../hooks/useStorage';
 
 const VehicleForm = ({ onClose }) => {
     const { addVehicle } = useVehicles();
+    const { uploadImage, uploading } = useStorage();
+    const [file, setFile] = useState(null);
+
     const [formData, setFormData] = useState({
         type: 'auto',
         brand: '',
@@ -14,10 +18,19 @@ const VehicleForm = ({ onClose }) => {
         photo: ''
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        addVehicle({
+
+        let photoUrl = formData.photo;
+
+        if (file) {
+            const url = await uploadImage(file);
+            if (url) photoUrl = url;
+        }
+
+        await addVehicle({
             ...formData,
+            photo: photoUrl,
             year: parseInt(formData.year),
             mileage: parseInt(formData.mileage)
         });
@@ -167,18 +180,27 @@ const VehicleForm = ({ onClose }) => {
                         </div>
                     </div>
 
-                    {/* URL Foto */}
+                    {/* Foto Upload */}
                     <div>
                         <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
-                            URL de la Foto
+                            Foto del Vehículo
                         </label>
-                        <input
-                            type="url"
-                            value={formData.photo}
-                            onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
-                            className="input-cod w-full"
-                            placeholder="https://..."
-                        />
+                        <div className="relative">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => setFile(e.target.files[0])}
+                                className="input-cod w-full file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-semibold file:bg-neon-green/10 file:text-neon-green hover:file:bg-neon-green/20"
+                            />
+                            {uploading && (
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                    <div className="animate-spin h-5 w-5 border-2 border-neon-green border-t-transparent rounded-full"></div>
+                                </div>
+                            )}
+                        </div>
+                        <p className="text-[10px] text-cod-text-dim mt-1">
+                            {file ? `Archivo seleccionado: ${file.name}` : 'Sube una foto real de tu unidad.'}
+                        </p>
                     </div>
 
                     {/* Actions */}
@@ -187,15 +209,23 @@ const VehicleForm = ({ onClose }) => {
                             type="button"
                             onClick={onClose}
                             className="flex-1 btn-secondary"
+                            disabled={uploading}
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             className="flex-1 btn-primary flex items-center justify-center gap-2"
+                            disabled={uploading}
                         >
-                            <Save size={18} />
-                            Guardar Vehículo
+                            {uploading ? (
+                                <span>Subiendo...</span>
+                            ) : (
+                                <>
+                                    <Save size={18} />
+                                    Guardar Vehículo
+                                </>
+                            )}
                         </button>
                     </div>
                 </form>

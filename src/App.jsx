@@ -27,6 +27,11 @@ function App() {
 
   // Check for Demo Mode flag
   useEffect(() => {
+    // Expose seeder to window for console usage
+    import('./utils/seeder').then(module => {
+      window.seedDatabase = module.seedDatabase;
+    });
+
     if (sessionStorage.getItem('demo-mode') === 'true') {
       // Create a temporary toast element
       const toast = document.createElement('div');

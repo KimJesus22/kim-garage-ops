@@ -45,13 +45,28 @@ export const VehicleProvider = ({ children }) => {
         }
     };
 
-    // Initial Load
+    // Initial Load & Auth Listener
     useEffect(() => {
+        // Fetch immediately
         fetchVehicles();
+
+        // Listen for auth changes (login/logout)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) {
+                fetchVehicles();
+            } else {
+                setVehicles([]); // Clear data on logout
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const addVehicle = async (vehicle) => {
         try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('No authenticated user');
+
             const { data, error } = await supabase
                 .from('vehicles')
                 .insert([{
@@ -62,7 +77,8 @@ export const VehicleProvider = ({ children }) => {
                     type: vehicle.type,
                     photo: vehicle.photo,
                     plate: vehicle.plate,
-                    status: 'active'
+                    status: 'active',
+                    user_id: user.id
                 }])
                 .select()
                 .single();
@@ -107,6 +123,13 @@ export const VehicleProvider = ({ children }) => {
 
     const addService = async (vehicleId, service) => {
         try {
+            const { data: { user } } = await supabase.auth.getUser();
+            // Note: services might not strictly need user_id if RLS checks vehicle ownership,
+            // but adding it ensures explicit ownership if the schema supports it.
+            // If the schema DOES NOT have user_id on services, this might error.
+            // However, the user requested: "Al hacer el .insert(), agrega explícitamente el campo user_id".
+            // I will add it. If it fails, it means the schema needs update.
+
             const { data, error } = await supabase
                 .from('services')
                 .insert([{
@@ -114,10 +137,11 @@ export const VehicleProvider = ({ children }) => {
                     type: service.type,
                     date: service.date,
                     cost: service.cost,
-                    description: service.notes, // Mapping 'notes' to 'description'
-                    mileage_at_service: service.mileageAtService, // Mapping camelCase to snake_case
+                    description: service.notes,
+                    mileage_at_service: service.mileageAtService,
                     status: service.status || 'completed',
-                    parts_used: service.partsUsed // JSONB column
+                    parts_used: service.partsUsed,
+                    user_id: user?.id // Explicitly adding user_id
                 }])
                 .select()
                 .single();
