@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus, Zap, Rocket, ShieldCheck, Heart, Fuel, QrCode } from 'lucide-react';
+import { Car, Bike, Edit2, Check, X, Wrench, AlertTriangle, FileText, TrendingDown, TrendingUp, Minus, Zap, Rocket, ShieldCheck, Heart, Fuel, QrCode, Share2 } from 'lucide-react';
 import { useVehicles } from '../context/VehicleContext';
 import ServiceForm from './ServiceForm';
 import FuelTracker from './FuelTracker';
 import VehicleQR from './VehicleQR';
+import ShareModal from './ShareModal';
 import { generateVehicleReport } from '../utils/pdfGenerator';
 import { calculateCostPerKm } from '../utils/calculations';
 import VehicleRankBadge from './VehicleRankBadge';
@@ -62,6 +63,7 @@ const VehicleCard = ({ vehicle }) => {
     const [showServiceForm, setShowServiceForm] = useState(false);
     const [showFuelTracker, setShowFuelTracker] = useState(false);
     const [showQR, setShowQR] = useState(false);
+    const [showShare, setShowShare] = useState(false);
 
     const handleSaveMileage = () => {
         if (newMileage && newMileage > 0) {
@@ -270,6 +272,13 @@ const VehicleCard = ({ vehicle }) => {
                             <QrCode size={18} />
                         </button>
                         <button
+                            onClick={() => setShowShare(true)}
+                            className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
+                            title="Compartir Unidad"
+                        >
+                            <Share2 size={18} />
+                        </button>
+                        <button
                             onClick={() => generateVehicleReport(vehicle)}
                             className="px-3 btn-secondary flex items-center justify-center text-cod-text-dim hover:text-neon-green"
                             title="Generar Reporte PDF"
@@ -298,6 +307,13 @@ const VehicleCard = ({ vehicle }) => {
                 <VehicleQR
                     vehicle={vehicle}
                     onClose={() => setShowQR(false)}
+                />
+            )}
+
+            {showShare && (
+                <ShareModal
+                    vehicle={vehicle}
+                    onClose={() => setShowShare(false)}
                 />
             )}
         </>

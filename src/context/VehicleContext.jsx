@@ -200,15 +200,63 @@ export const VehicleProvider = ({ children }) => {
         fetchVehicles(); // Just re-fetch
     };
 
+    // --- Public Showcase Logic ---
+
+    const togglePublicLink = async (vehicleId) => {
+        try {
+            // Find current state
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            if (!vehicle) throw new Error('Vehicle not found');
+
+            const newStatus = vehicle.share_token ? null : crypto.randomUUID();
+
+            const { error } = await supabase
+                .from('vehicles')
+                .update({ share_token: newStatus })
+                .eq('id', vehicleId);
+
+            if (error) throw error;
+
+            // Update local state
+            setVehicles(prev => prev.map(v =>
+                v.id === vehicleId ? { ...v, share_token: newStatus } : v
+            ));
+
+            return newStatus;
+        } catch (error) {
+            console.error('Error toggling public link:', error.message);
+            throw error;
+        }
+    };
+
+    const fetchPublicVehicle = async (token) => {
+        try {
+            const { data, error } = await supabase
+                .from('vehicles')
+                .select('*, services(*)')
+                .eq('share_token', token)
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error fetching public vehicle:', error.message);
+            return null;
+        }
+    };
+
     return (
         <VehicleContext.Provider value={{
             vehicles,
             loading,
+            fetchVehicles,
             addVehicle,
             updateVehicle,
             deleteVehicle,
             addService,
             updateServiceStatus,
+            togglePublicLink,
+            fetchPublicVehicle,
             addFuelLog,
             restoreData
         }}>
