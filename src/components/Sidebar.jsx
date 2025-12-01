@@ -3,6 +3,7 @@ import { Home, Car, History, Package, ClipboardList, Shield, BarChart3, Settings
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import { useTacticalSound } from '../hooks/useTacticalSound';
+import NetworkStatus from './NetworkStatus';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -65,16 +66,9 @@ const Sidebar = () => {
 
             {/* Footer */}
             <div className="p-4 border-t border-cod-border space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-cod-panel flex items-center justify-center text-neon-green font-bold border border-cod-border">
-                            OP
-                        </div>
-                        <div>
-                            <p className="text-sm font-bold text-cod-text">Operador</p>
-                            <p className="text-xs text-cod-text-dim">Nivel 1</p>
-                        </div>
-                    </div>
+                {/* Network Status & User Info */}
+                <div className="flex justify-between items-center mb-2">
+                    <NetworkStatus />
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => { playClick(); toggleMute(); }}
@@ -84,6 +78,16 @@ const Sidebar = () => {
                             {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
                         </button>
                         <NotificationBell />
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-cod-panel flex items-center justify-center text-neon-green font-bold border border-cod-border">
+                        OP
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-cod-text">Operador</p>
+                        <p className="text-xs text-cod-text-dim">Nivel 1</p>
                     </div>
                 </div>
                 <button

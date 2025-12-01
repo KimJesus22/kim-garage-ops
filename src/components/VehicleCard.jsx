@@ -9,6 +9,7 @@ import { generateVehicleReport } from '../utils/pdfGenerator';
 import { calculateCostPerKm } from '../utils/calculations';
 import VehicleRankBadge from './VehicleRankBadge';
 import { formatCurrency } from '../utils/formatters';
+import AIOracle from './AIOracle';
 
 const getSpecialBadge = (vehicle) => {
     if (!vehicle || !vehicle.brand || !vehicle.model) return null;
@@ -247,6 +248,9 @@ const VehicleCard = ({ vehicle }) => {
                             </p>
                         )}
                     </div>
+
+                    {/* El Oráculo (IA Predictiva) */}
+                    <AIOracle vehicle={vehicle} />
 
                     {/* Botones de Acción */}
                     <div className="flex gap-2 mt-2">

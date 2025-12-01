@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { X, Save, Car, Bike } from 'lucide-react';
+import { X, Save, Car, Bike, ScanLine, Loader2 } from 'lucide-react';
+import { createWorker } from 'tesseract.js';
 import { useVehicles } from '../context/VehicleContext';
 import { useStorage } from '../hooks/useStorage';
 
@@ -7,6 +8,8 @@ const VehicleForm = ({ onClose }) => {
     const { addVehicle } = useVehicles();
     const { uploadImage, uploading } = useStorage();
     const [file, setFile] = useState(null);
+    const [scanning, setScanning] = useState(false);
+    const [ocrStatus, setOcrStatus] = useState('');
 
     const [formData, setFormData] = useState({
         type: 'auto',
@@ -35,6 +38,57 @@ const VehicleForm = ({ onClose }) => {
             mileage: parseInt(formData.mileage)
         });
         onClose();
+    };
+
+    const handleOCR = async () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.capture = 'environment'; // Prefer rear camera on mobile
+
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            setScanning(true);
+            setOcrStatus('Procesando Inteligencia...');
+
+            try {
+                const worker = await createWorker('eng'); // English is usually fine for alphanumeric
+
+                setOcrStatus('Procesando Inteligencia...');
+                const ret = await worker.recognize(file);
+
+                setOcrStatus('Analizando texto...');
+                const text = ret.data.text;
+
+                // Simple regex to find potential plates (alphanumeric sequences of 6-9 chars) or VINs (17 chars)
+                // This is a basic heuristic
+                const words = text.split(/\s+/);
+                const potentialPlate = words.find(w => /^[A-Z0-9-]{6,17}$/.test(w));
+
+                if (potentialPlate) {
+                    // Clean up common OCR errors if needed, but for now just take it
+                    const cleanPlate = potentialPlate.replace(/[^A-Z0-9-]/g, '');
+                    setFormData(prev => ({ ...prev, plate: cleanPlate }));
+                    setOcrStatus('¡Identificación Exitosa!');
+                } else {
+                    setOcrStatus('No se detectó Placa/VIN.');
+                }
+
+                await worker.terminate();
+            } catch (err) {
+                console.error("OCR Error:", err);
+                setOcrStatus('Error en escaneo.');
+            } finally {
+                setTimeout(() => {
+                    setScanning(false);
+                    setOcrStatus('');
+                }, 1500);
+            }
+        };
+
+        input.click();
     };
 
     return (
@@ -75,8 +129,8 @@ const VehicleForm = ({ onClose }) => {
                         </button>
                     </div>
 
-                    {/* Marca y Modelo */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* Marca, Modelo y Placa */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
                                 Marca
@@ -133,10 +187,35 @@ const VehicleForm = ({ onClose }) => {
                                 <option value="Pulsar" />
                             </datalist>
                         </div>
+                        <div>
+                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1 flex justify-between items-center">
+                                <span>Placa / VIN</span>
+                                {scanning && <span className="text-neon-green text-[10px] animate-pulse">{ocrStatus}</span>}
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={formData.plate}
+                                    onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
+                                    className="input-cod w-full uppercase"
+                                    placeholder="ABC-123"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleOCR}
+                                    disabled={scanning}
+                                    className="p-2 bg-cod-dark border border-cod-border rounded-sm hover:border-neon-green hover:text-neon-green transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    title="Escanear Placa/VIN"
+                                >
+                                    {scanning ? <Loader2 size={20} className="animate-spin" /> : <ScanLine size={20} />}
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Año, Kilometraje y Placa */}
-                    <div className="grid grid-cols-3 gap-4">
+                    {/* Año y Kilometraje */}
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
                                 Año
@@ -162,19 +241,6 @@ const VehicleForm = ({ onClose }) => {
                                 className="input-cod w-full"
                                 placeholder="0"
                                 min="0"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-cod-text-dim uppercase tracking-wider mb-1">
-                                Placa
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.plate}
-                                onChange={(e) => setFormData({ ...formData, plate: e.target.value })}
-                                className="input-cod w-full uppercase"
-                                placeholder="ABC-123"
                                 required
                             />
                         </div>

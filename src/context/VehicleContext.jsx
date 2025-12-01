@@ -15,6 +15,8 @@ export const VehicleProvider = ({ children }) => {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [isOnline, setIsOnline] = useState(false);
+
     // --- Supabase Operations ---
 
     const fetchVehicles = async () => {
@@ -44,6 +46,66 @@ export const VehicleProvider = ({ children }) => {
             setLoading(false);
         }
     };
+
+    // Realtime Subscriptions
+    useEffect(() => {
+        const channel = supabase
+            .channel('realtime-garage')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, (payload) => {
+                if (payload.eventType === 'INSERT') {
+                    setVehicles(prev => [{ ...payload.new, services: [] }, ...prev]);
+                } else if (payload.eventType === 'UPDATE') {
+                    setVehicles(prev => prev.map(v => v.id === payload.new.id ? { ...v, ...payload.new } : v));
+                } else if (payload.eventType === 'DELETE') {
+                    setVehicles(prev => prev.filter(v => v.id !== payload.old.id));
+                }
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, (payload) => {
+                // Handle Service Changes
+                if (payload.eventType === 'INSERT') {
+                    setVehicles(prev => prev.map(v => {
+                        if (v.id === payload.new.vehicle_id) {
+                            return {
+                                ...v,
+                                services: [payload.new, ...(v.services || [])].sort((a, b) => new Date(b.date) - new Date(a.date))
+                            };
+                        }
+                        return v;
+                    }));
+                } else if (payload.eventType === 'UPDATE') {
+                    setVehicles(prev => prev.map(v => {
+                        // Check if this vehicle contains the service (either by vehicle_id match or searching services)
+                        // payload.new usually has vehicle_id.
+                        if (v.id === payload.new.vehicle_id) {
+                            return {
+                                ...v,
+                                services: v.services.map(s => s.id === payload.new.id ? payload.new : s)
+                                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                            };
+                        }
+                        return v;
+                    }));
+                } else if (payload.eventType === 'DELETE') {
+                    // For DELETE, payload.old might not have vehicle_id depending on replica identity.
+                    // We might need to search all vehicles to find where to delete it from.
+                    setVehicles(prev => prev.map(v => ({
+                        ...v,
+                        services: v.services.filter(s => s.id !== payload.old.id)
+                    })));
+                }
+            })
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    setIsOnline(true);
+                } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+                    setIsOnline(false);
+                }
+            });
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
 
     // Initial Load & Auth Listener
     useEffect(() => {
@@ -258,7 +320,9 @@ export const VehicleProvider = ({ children }) => {
             togglePublicLink,
             fetchPublicVehicle,
             addFuelLog,
-            restoreData
+            addFuelLog,
+            restoreData,
+            isOnline
         }}>
             {children}
         </VehicleContext.Provider>
