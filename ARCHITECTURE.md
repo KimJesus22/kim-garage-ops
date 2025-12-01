@@ -80,7 +80,9 @@ src/
 │   ├── Garage.jsx         # Gestión de flota
 │   ├── Kanban.jsx         # Tablero de gestión de tareas
 │   ├── Historial.jsx      # Bitácora y exportación de datos
-│   └── Estadisticas.jsx   # Análisis detallado
+│   ├── Estadisticas.jsx   # Análisis detallado
+│   ├── Schedule.jsx       # Calendario de operaciones
+│   └── Configuracion.jsx  # Ajustes del sistema
 └── utils/            # Funciones auxiliares puras y constantes
     ├── calculations.js    # Lógica matemática (Costo/Km, Riesgo)
     ├── exporter.js        # Exportación de datos a CSV (BOM support)
@@ -121,5 +123,8 @@ src/
 **Justificación**: API nativa del navegador que permite síntesis de audio en tiempo real con latencia cero. Elimina la necesidad de cargar archivos de audio externos (mp3/wav), manteniendo la aplicación extremadamente ligera y performante.
 
 ### `tailwindcss`
-**Propósito**: Sistema de diseño y estilizado.
 **Justificación**: Permite un desarrollo rápido mediante clases de utilidad. La configuración personalizada (`tailwind.config.js`) facilita la implementación de un **Design System** coherente (Colores "COD MW", tipografías, espaciados) en toda la aplicación sin escribir CSS tradicional propenso a errores de especificidad.
+
+### `tesseract.js`
+**Propósito**: OCR (Reconocimiento Óptico de Caracteres).
+**Justificación**: Permite escanear y extraer texto de imágenes directamente en el navegador (Client-side). Se utiliza para la lectura automática de placas y VINs desde la cámara o archivos, mejorando la experiencia de usuario y reduciendo errores de entrada manual.

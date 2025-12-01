@@ -122,22 +122,65 @@ export const InventoryProvider = ({ children }) => {
     };
 
     // --- Service Templates (Loadouts) System ---
-    // Keeping this in LocalStorage as per plan/scope
-    const [serviceTemplates, setServiceTemplates] = useState(() => {
-        const saved = localStorage.getItem('garage-templates');
-        return saved ? JSON.parse(saved) : [];
-    });
 
-    useEffect(() => {
-        localStorage.setItem('garage-templates', JSON.stringify(serviceTemplates));
-    }, [serviceTemplates]);
+    const [serviceTemplates, setServiceTemplates] = useState([]);
 
-    const addTemplate = (template) => {
-        setServiceTemplates(prev => [...prev, { ...template, id: Date.now() }]);
+    const fetchTemplates = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('service_templates')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setServiceTemplates(data || []);
+        } catch (error) {
+            console.error('Error fetching templates:', error.message);
+        }
     };
 
-    const deleteTemplate = (id) => {
-        setServiceTemplates(prev => prev.filter(t => t.id !== id));
+    // Fetch templates on load
+    useEffect(() => {
+        fetchTemplates();
+    }, []);
+
+    const addTemplate = async (template) => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('No authenticated user');
+
+            const { data, error } = await supabase
+                .from('service_templates')
+                .insert([{
+                    name: template.name,
+                    labor_cost: template.laborCost,
+                    items: template.items,
+                    user_id: user.id
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            setServiceTemplates(prev => [data, ...prev]);
+        } catch (error) {
+            console.error('Error adding template:', error.message);
+        }
+    };
+
+    const deleteTemplate = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('service_templates')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            setServiceTemplates(prev => prev.filter(t => t.id !== id));
+        } catch (error) {
+            console.error('Error deleting template:', error.message);
+        }
     };
 
     return (

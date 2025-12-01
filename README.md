@@ -45,6 +45,11 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 - **Etiquetado QR**: Generación de tarjetas de identificación con código QR para cada vehículo.
 - **Evidencia Fotográfica**: Adjunta fotos comprimidas a los registros de servicio.
 - **Eficiencia de Combustible**: Cálculo automático de Km/L y semáforo de rendimiento.
+- **Escáner OCR (Nuevo)**: Escaneo inteligente de placas y VINs utilizando la cámara o imágenes, potenciado por `tesseract.js`.
+- **Nuevos Módulos**:
+    - **Calendario Táctico**: Programación visual de operaciones y mantenimientos.
+    - **Estadísticas Avanzadas**: Análisis de tendencias de gastos y rendimiento.
+    - **Configuración**: Ajustes del sistema y gestión de datos.
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -54,6 +59,7 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 - **Enrutamiento**: [React Router](https://reactrouter.com/)
 - **Gráficos**: [Recharts](https://recharts.org/)
 - **Iconos**: [Lucide React](https://lucide.dev/)
+- **OCR**: [Tesseract.js](https://tesseract.projectnaptha.com/)
 - **Utilidades**: `jspdf`, `qrcode.react`, `html2canvas`
 - **Estado**: React Context API + LocalStorage (Persistencia de datos)
 
@@ -86,7 +92,7 @@ Una aplicación web moderna para la gestión integral de vehículos (autos y mot
 src/
 ├── components/      # Componentes reutilizables (Cards, Forms, Sidebar, ThemeSelector)
 ├── context/         # Estado global (VehicleContext)
-├── pages/           # Vistas principales (Landing, Dashboard, Garage, Historial)
+├── pages/           # Vistas principales (Landing, Dashboard, Garage, Historial, Schedule, Estadisticas, Configuracion)
 ├── index.css        # Configuración de Tailwind y variables CSS para temas
 └── main.jsx         # Punto de entrada
 ```

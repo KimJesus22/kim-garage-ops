@@ -18,6 +18,7 @@ import Kanban from './pages/Kanban';
 import Configuracion from './pages/Configuracion';
 import Estadisticas from './components/Estadisticas';
 import Showroom from './pages/Showroom';
+import Loadouts from './pages/Loadouts';
 
 function App() {
   useEffect(() => {
@@ -60,6 +61,7 @@ function App() {
                               <Route path="/dashboard" element={<Dashboard />} />
                               <Route path="/garage" element={<Garage />} />
                               <Route path="/inventory" element={<Inventory />} />
+                              <Route path="/loadouts" element={<Loadouts />} />
                               <Route path="/schedule" element={<Schedule />} />
                               <Route path="/kanban" element={<Kanban />} />
                               <Route path="/history" element={<Historial />} />
